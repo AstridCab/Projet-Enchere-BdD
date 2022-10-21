@@ -13,7 +13,6 @@ import java.sql.PreparedStatement;
 import fr.insa.astrid.lire.Lire;
 import java.sql.ResultSet;
 
-//test
 /**
  *
  * @author Utilisateur
