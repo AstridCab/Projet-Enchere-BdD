@@ -231,14 +231,14 @@ public class ProjetEncheres {
             System.out.println("Prix de mise en vente");
             int prixInitial = Lire.i();
             System.out.println("Date de mise en vente (sous la forme AAAA-MM-JJ) ");
-            Timestamp dateDebutEnchere = Lire.S();
+            String dateDebutEnchere = Lire.S();
             System.out.println("Date de fin de mise en vente (sous la forme AAAA-MM-JJ) ");
-            Timestamp dateFinEnchere = Lire.S();
+            String dateFinEnchere = Lire.S();
             pst.setString(1, nom);
             pst.setString(2, description);
             pst.setInt(3, prixInitial);
-            pst.setTimestamp(4, dateDebutEnchere);
-            pst.setTimestamp(5, dateFinEnchere);
+            pst.setString(4, dateDebutEnchere);
+            pst.setString(5, dateFinEnchere);
             pst.executeUpdate();
         } catch(SQLException ex){
             con.rollback();
