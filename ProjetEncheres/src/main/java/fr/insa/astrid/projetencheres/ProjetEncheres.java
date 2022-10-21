@@ -12,6 +12,8 @@ import java.sql.Statement;
 import java.sql.PreparedStatement;
 import fr.insa.astrid.lire.Lire;
 import java.sql.ResultSet;
+import java.sql.Timestamp;
+
 
 //bonjour
 
@@ -219,32 +221,33 @@ public class ProjetEncheres {
             con.setAutoCommit(true);
         }
     }
-    //public static void nouvAnnonce(Connection con) throws SQLException { // Permet de demander des informations à l'utilisateur qui seront rentrées dans la table Annonce
-      //  con.setAutoCommit(false);
-        //try ( PreparedStatement pst = con.prepareStatement("insert into annonce (nom,description,prixInitial,dateDebutEnchere,dateFinEnchere,idUtilisateur,idType) values (?,?,?,?,?,?,?)")) {
-          //  System.out.println("Nom de l'objet :");
-            //String nom = Lire.S();
-            //System.out.println("Description de l'objet :");
-            //String description = Lire.S();
-            //System.out.println("Prix de mise en vente");
-            //int prixInitial = Lire.i();
-            //System.out.println("Date de mise en vente (sous la forme AAAA-MM-JJ) ");
-            //timestamp dateDebutEnchere = Lire.i();
-            //System.out.println("Date de fin de mise en vente (sous la forme AAAA-MM-JJ) ");
-            //timestamp dateFinEnchere = Lire.i();
-            //pst.setString(1, nom);
-            //pst.setString(2, description);
-            //pst.setInt(3, prixInitial);
-            //pst.setInt(3, prixInitial);
-            //pst.executeUpdate();
-        //} catch(SQLException ex){
-          //  con.rollback();
-            //throw ex;
-        //}
-        //finally {
-          //  con.setAutoCommit(true);
-        //}
-    //}
+    public static void nouvAnnonce(Connection con) throws SQLException { // Permet de demander des informations à l'utilisateur qui seront rentrées dans la table Annonce
+        con.setAutoCommit(false);
+        try ( PreparedStatement pst = con.prepareStatement("insert into annonce (nom,description,prixInitial,dateDebutEnchere,dateFinEnchere,idUtilisateur,idType) values (?,?,?,?,?,?,?)")) {
+            System.out.println("Nom de l'objet :");
+            String nom = Lire.S();
+            System.out.println("Description de l'objet :");
+            String description = Lire.S();
+            System.out.println("Prix de mise en vente");
+            int prixInitial = Lire.i();
+            System.out.println("Date de mise en vente (sous la forme AAAA-MM-JJ) ");
+            Timestamp dateDebutEnchere = Lire.S();
+            System.out.println("Date de fin de mise en vente (sous la forme AAAA-MM-JJ) ");
+            Timestamp dateFinEnchere = Lire.S();
+            pst.setString(1, nom);
+            pst.setString(2, description);
+            pst.setInt(3, prixInitial);
+            pst.setTimestamp(4, dateDebutEnchere);
+            pst.setTimestamp(5, dateFinEnchere);
+            pst.executeUpdate();
+        } catch(SQLException ex){
+            con.rollback();
+            throw ex;
+        }
+        finally {
+            con.setAutoCommit(true);
+        }
+    }
     public static void afficherUtilisateur(Connection con) //Permet d'afficher la table utilisateur
             throws SQLException {
         con.setAutoCommit(false);
