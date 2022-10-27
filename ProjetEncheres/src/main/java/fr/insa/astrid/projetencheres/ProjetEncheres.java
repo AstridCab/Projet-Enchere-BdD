@@ -230,17 +230,24 @@ public class ProjetEncheres {
             String description = Lire.S();
             System.out.println("Prix de mise en vente");
             int prixInitial = Lire.i();
-            System.out.println("Date de mise en vente (sous la forme AAAA-MM-JJ) ");
+            System.out.println("Date de mise en vente (sous la forme AAAA-MM-JJ hh:mm:ss) ");
             String dateDebutEnchere = Lire.S();
             Timestamp dateDebut = Timestamp.valueOf(dateDebutEnchere); // permet de convertir le string en timestamp
-            System.out.println("Date de fin de mise en vente (sous la forme AAAA-MM-JJ) ");
+            System.out.println("Date de fin de mise en vente (sous la forme AAAA-MM-JJ hh:mm:ss) ");
             String dateFinEnchere = Lire.S();
             Timestamp dateFin = Timestamp.valueOf(dateFinEnchere);
+            System.out.println("Nom d'Utilisateur :");
+            String nomUtilisateur = Lire.S();
+            System.out.println("Mot de pass :");
+            String pass = Lire.S();
+            int idUtilisateur = identifiantUtilisateur(con, nomUtilisateur,pass);
             pst.setString(1, nom);
             pst.setString(2, description);
             pst.setInt(3, prixInitial);
-            pst.setString(4, dateDebutEnchere);
-            pst.setString(5, dateFinEnchere);
+            pst.setTimestamp(4, dateDebut);
+            pst.setTimestamp(5, dateFin);
+            pst.setInt(6, idUtilisateur);
+            pst.setInt(7, 1);
             pst.executeUpdate();
         } catch(SQLException ex){
             con.rollback();
@@ -250,11 +257,11 @@ public class ProjetEncheres {
             con.setAutoCommit(true);
         }
     }
-    public static int identifiantUtilisateur(Connection con, String nom, String pass)throws SQLException {
+    public static int identifiantUtilisateur(Connection con, String nomUtilisateur, String pass)throws SQLException {
         con.setAutoCommit(false);
         int id = -1 ; //cela permet au programme de renvoyer une valeur même s'il y a une erreur avec le rollback (-1 car cette valeur est impossible dans le tableau id)
         try ( PreparedStatement pst = con.prepareStatement("select id from utilisateur where (nom,pass) values (?,?)")) {
-            pst.setString(1, nom);
+            pst.setString(1, nomUtilisateur);
             pst.setString(2, pass);
             try (ResultSet tableUtilisateur= pst.executeQuery()){ //on écrit rien dans les parenthèses car le programme sait deja ce qu'il doit envoyer                
                         while (tableUtilisateur.next()){ //tant qu'il reste des lignes le programme continue
@@ -300,7 +307,7 @@ public class ProjetEncheres {
                     System.out.println("(1) - Recreer la Base de Donnee");
                     System.out.println("(2) - Ajouter un nouvel Utilisateur");
                     System.out.println("(3) - Afficher la table des Utilisateur");
-                    //System.out.println("(4) - Ajouter une nouvelle Annonce");
+                    System.out.println("(4) - Ajouter une nouvelle Annonce");
                     System.out.println("=================================");
                     System.out.println("Votre choix :");
                     rep= Lire.i();
@@ -316,10 +323,10 @@ public class ProjetEncheres {
                         else if (rep==3) {
                             afficherUtilisateur(con);
                         }
-                        //else if (rep==4) {
-                            //nouvAnnonce(con);
-                            //System.out.println("Annonce ajoutée");
-                        //}
+                        else if (rep==4) {
+                            nouvAnnonce(con);
+                            System.out.println("Annonce ajoutée");
+                        }
                     } catch(SQLException ex){ 
                         throw new Error(ex);
                     }
