@@ -232,8 +232,10 @@ public class ProjetEncheres {
             int prixInitial = Lire.i();
             System.out.println("Date de mise en vente (sous la forme AAAA-MM-JJ) ");
             String dateDebutEnchere = Lire.S();
+            Timestamp dateDebut = Timestamp.valueOf(dateDebutEnchere); // permet de convertir le string en timestamp
             System.out.println("Date de fin de mise en vente (sous la forme AAAA-MM-JJ) ");
             String dateFinEnchere = Lire.S();
+            Timestamp dateFin = Timestamp.valueOf(dateFinEnchere);
             pst.setString(1, nom);
             pst.setString(2, description);
             pst.setInt(3, prixInitial);
@@ -248,6 +250,27 @@ public class ProjetEncheres {
             con.setAutoCommit(true);
         }
     }
+    public static int identifiantUtilisateur(Connection con, String nom, String pass)throws SQLException {
+        con.setAutoCommit(false);
+        int id = -1 ; //cela permet au programme de renvoyer une valeur même s'il y a une erreur avec le rollback (-1 car cette valeur est impossible dans le tableau id)
+        try ( PreparedStatement pst = con.prepareStatement("select id from utilisateur where (nom,pass) values (?,?)")) {
+            pst.setString(1, nom);
+            pst.setString(2, pass);
+            try (ResultSet tableUtilisateur= pst.executeQuery()){ //on écrit rien dans les parenthèses car le programme sait deja ce qu'il doit envoyer                
+                        while (tableUtilisateur.next()){ //tant qu'il reste des lignes le programme continue
+                            id = tableUtilisateur.getInt("id");
+                        }
+            }
+        } catch(SQLException ex){
+            con.rollback();
+            throw ex;
+        }
+        finally {
+            con.setAutoCommit(true);
+        }
+    return id ;
+    }      
+        
     public static void afficherUtilisateur(Connection con) //Permet d'afficher la table utilisateur
             throws SQLException {
         con.setAutoCommit(false);
