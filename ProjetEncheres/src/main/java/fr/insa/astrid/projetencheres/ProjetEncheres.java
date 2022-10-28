@@ -277,7 +277,68 @@ public class ProjetEncheres {
         }
     return id ;
     }      
-        
+    public static void categorie(Connection con) throws SQLException { // Permet de demander des informations à l'utilisateur qui seront rentrées dans la table Annonce
+        con.setAutoCommit(false);
+        try ( PreparedStatement pst = con.prepareStatement("insert into categorie (type) values ('vetements')")) {
+            pst.executeUpdate();
+        } catch(SQLException ex){
+            con.rollback();
+            throw ex;
+        }
+        finally {
+            con.setAutoCommit(true);
+        }
+        con.setAutoCommit(false);
+        try ( PreparedStatement pst = con.prepareStatement("insert into categorie (type) values ('meuble')")) {
+            pst.executeUpdate();
+        } catch(SQLException ex){
+            con.rollback();
+            throw ex;
+        }
+        finally {
+            con.setAutoCommit(true);
+        }
+        con.setAutoCommit(false);
+        try ( PreparedStatement pst = con.prepareStatement("insert into categorie (type) values ('bijoux')")) {
+            pst.executeUpdate();
+        } catch(SQLException ex){
+            con.rollback();
+            throw ex;
+        }
+        finally {
+            con.setAutoCommit(true);
+        }
+        con.setAutoCommit(false);
+        try ( PreparedStatement pst = con.prepareStatement("insert into categorie (type) values ('art')")) {
+            pst.executeUpdate();
+        } catch(SQLException ex){
+            con.rollback();
+            throw ex;
+        }
+        finally {
+            con.setAutoCommit(true);
+        }
+    }
+    public static void afficherCategorie(Connection con) //Permet d'afficher la table categorie
+            throws SQLException {
+        con.setAutoCommit(false);
+        try ( Statement st = con.createStatement()) {
+            try (ResultSet tableCategorie=st.executeQuery("select * from categorie")){                
+                    System.out.println("Table Categorie");
+                while (tableCategorie.next()){ //tant qu'il reste des lignes le programme continue
+                    System.out.println("_____________________________");
+                    int id = tableCategorie.getInt("id");
+                    String type = tableCategorie.getString("type");
+                    System.out.println(id +"   |   " + type +"   |   "); //Permet d'écrire en ligne
+                }
+            }
+            } catch (SQLException ex) {
+            con.rollback();
+            throw ex;
+        } finally {
+            con.setAutoCommit(true);
+        }
+    }
     public static void afficherUtilisateur(Connection con) //Permet d'afficher la table utilisateur
             throws SQLException {
         con.setAutoCommit(false);
@@ -308,6 +369,7 @@ public class ProjetEncheres {
                     System.out.println("(2) - Ajouter un nouvel Utilisateur");
                     System.out.println("(3) - Afficher la table des Utilisateur");
                     System.out.println("(4) - Ajouter une nouvelle Annonce");
+                    System.out.println("(5) - Afficher la table des Categories");
                     System.out.println("=================================");
                     System.out.println("Votre choix :");
                     rep= Lire.i();
@@ -326,6 +388,9 @@ public class ProjetEncheres {
                         else if (rep==4) {
                             nouvAnnonce(con);
                             System.out.println("Annonce ajoutée");
+                        }
+                        else if (rep==5) {
+                            afficherCategorie(con);
                         }
                     } catch(SQLException ex){ 
                         throw new Error(ex);
