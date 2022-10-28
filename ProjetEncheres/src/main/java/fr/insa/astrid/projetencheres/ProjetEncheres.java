@@ -240,14 +240,17 @@ public class ProjetEncheres {
             String nomUtilisateur = Lire.S();
             System.out.println("Mot de pass :");
             String pass = Lire.S();
+            System.out.println("Catégorie de votre objet entre vetements,meuble,bijoux,art :");
+            String type = Lire.S();
             int idUtilisateur = identifiantUtilisateur(con, nomUtilisateur,pass);
+            int idCategorie= identifiantCategorie(con, type);
             pst.setString(1, nom);
             pst.setString(2, description);
             pst.setInt(3, prixInitial);
             pst.setTimestamp(4, dateDebut);
             pst.setTimestamp(5, dateFin);
             pst.setInt(6, idUtilisateur);
-            pst.setInt(7, 1);
+            pst.setInt(7, idCategorie);
             pst.executeUpdate();
         } catch(SQLException ex){
             con.rollback();
@@ -276,7 +279,26 @@ public class ProjetEncheres {
             con.setAutoCommit(true);
         }
     return id ;
-    }      
+    }
+    public static int identifiantCategorie(Connection con, String type)throws SQLException {
+        con.setAutoCommit(false);
+        int id = -1 ; //cela permet au programme de renvoyer une valeur même s'il y a une erreur avec le rollback (-1 car cette valeur est impossible dans le tableau id)
+        try ( PreparedStatement pst = con.prepareStatement("select id from categorie where (type) values (?)")) {
+            pst.setString(1, type);
+            try (ResultSet tableCategorie= pst.executeQuery()){ //on écrit rien dans les parenthèses car le programme sait deja ce qu'il doit envoyer                
+                        while (tableCategorie.next()){ //tant qu'il reste des lignes le programme continue
+                            id = tableCategorie.getInt("id");
+                        }
+            }
+        } catch(SQLException ex){
+            con.rollback();
+            throw ex;
+        }
+        finally {
+            con.setAutoCommit(true);
+        }
+    return id ;
+    }
     public static void categorie(Connection con) throws SQLException { // Permet de demander des informations à l'utilisateur qui seront rentrées dans la table Annonce
         con.setAutoCommit(false);
         try ( PreparedStatement pst = con.prepareStatement("insert into categorie (type) values ('vetements')")) {
@@ -326,7 +348,7 @@ public class ProjetEncheres {
             try (ResultSet tableCategorie=st.executeQuery("select * from categorie")){                
                     System.out.println("Table Categorie");
                 while (tableCategorie.next()){ //tant qu'il reste des lignes le programme continue
-                    System.out.println("_____________________________");
+                    System.out.println("_________________________");
                     int id = tableCategorie.getInt("id");
                     String type = tableCategorie.getString("type");
                     System.out.println(id +"   |   " + type +"   |   "); //Permet d'écrire en ligne
@@ -390,6 +412,7 @@ public class ProjetEncheres {
                             System.out.println("Annonce ajoutée");
                         }
                         else if (rep==5) {
+                            categorie(con);
                             afficherCategorie(con);
                         }
                     } catch(SQLException ex){ 
