@@ -236,21 +236,21 @@ public class ProjetEncheres {
             System.out.println("Date de fin de mise en vente (sous la forme AAAA-MM-JJ hh:mm:ss) ");
             String dateFinEnchere = Lire.S();
             Timestamp dateFin = Timestamp.valueOf(dateFinEnchere);
-//            System.out.println("Nom d'Utilisateur :");
-//            String nomUtilisateur = Lire.S();
-//            System.out.println("Mot de pass :");
-//            String pass = Lire.S();
-//            System.out.println("Catégorie de votre objet entre vetements,meuble,bijoux,art :");
-//            String type = Lire.S();
-//          int idUtilisateur = identifiantUtilisateur(con, nomUtilisateur,pass);
-//            int idCategorie= identifiantCategorie(con, type);
+            System.out.println("Nom d'Utilisateur :");
+            String nomUtilisateur = Lire.S();
+            System.out.println("Mot de pass :");
+            String pass = Lire.S();
+            System.out.println("Catégorie de votre objet entre vetements,meuble,bijoux,art :");
+            String type = Lire.S();
+            int idUtilisateur = identifiantUtilisateur(con, nomUtilisateur,pass);
+            int idCategorie= identifiantCategorie(con, type);
             pst.setString(1, nom);
             pst.setString(2, description);
             pst.setInt(3, prixInitial);
             pst.setTimestamp(4, dateDebut);
             pst.setTimestamp(5, dateFin);
             pst.setInt(6, idUtilisateur);//idUtilisateur
-            pst.setInt(7, 1);//idCategorie
+            pst.setInt(7, idCategorie);//idCategorie
             pst.executeUpdate();
         } catch(SQLException ex){
             con.rollback();
@@ -263,7 +263,7 @@ public class ProjetEncheres {
     public static int identifiantUtilisateur(Connection con, String nomUtilisateur, String pass)throws SQLException {
         con.setAutoCommit(false);
         int id = -1 ; //cela permet au programme de renvoyer une valeur même s'il y a une erreur avec le rollback (-1 car cette valeur est impossible dans le tableau id)
-        try ( PreparedStatement pst = con.prepareStatement("select id from utilisateur where (nom,pass) values (?,?)")) {
+        try ( PreparedStatement pst = con.prepareStatement("select id from utilisateur where (nom,pass)=(?,?)")) {
             pst.setString(1, nomUtilisateur);
             pst.setString(2, pass);
             try (ResultSet tableUtilisateur= pst.executeQuery()){ //on écrit rien dans les parenthèses car le programme sait deja ce qu'il doit envoyer                
@@ -283,7 +283,7 @@ public class ProjetEncheres {
     public static int identifiantCategorie(Connection con, String type)throws SQLException {
         con.setAutoCommit(false);
         int id = -1 ; //cela permet au programme de renvoyer une valeur même s'il y a une erreur avec le rollback (-1 car cette valeur est impossible dans le tableau id)
-        try ( PreparedStatement pst = con.prepareStatement("select id from categorie where (type) values (?)")) {
+        try ( PreparedStatement pst = con.prepareStatement("select id from categorie where (type)=(?)")) {
             pst.setString(1, type);
             try (ResultSet tableCategorie= pst.executeQuery()){ //on écrit rien dans les parenthèses car le programme sait deja ce qu'il doit envoyer                
                         while (tableCategorie.next()){ //tant qu'il reste des lignes le programme continue
