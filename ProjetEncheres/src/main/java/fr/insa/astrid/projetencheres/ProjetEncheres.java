@@ -249,8 +249,8 @@ public class ProjetEncheres {
             pst.setInt(3, prixInitial);
             pst.setTimestamp(4, dateDebut);
             pst.setTimestamp(5, dateFin);
-            pst.setInt(6, idUtilisateur);//idUtilisateur
-            pst.setInt(7, idCategorie);//idCategorie
+            pst.setInt(6, idUtilisateur);
+            pst.setInt(7, idCategorie);
             pst.executeUpdate();
         } catch(SQLException ex){
             con.rollback();
@@ -373,6 +373,31 @@ public class ProjetEncheres {
                     String nom = tableUtilisateur.getString("nom");
                     String pass = tableUtilisateur.getString("pass");
                     System.out.println(id +"   |   " + nom +"   |   " + pass); //Permet d'écrire en ligne
+                }
+            }
+            } catch (SQLException ex) {
+            con.rollback();
+            throw ex;
+        } finally {
+            con.setAutoCommit(true);
+        }
+    }
+    public static void afficherAnnonce(Connection con) //Permet d'afficher la table des annonces
+            throws SQLException {
+        con.setAutoCommit(false);
+        try ( Statement st = con.createStatement()) {
+            try (ResultSet tableAnnonce=st.executeQuery("select * from Annonce")){                
+                    System.out.println("Table Annonce");
+                while (tableAnnonce.next()){ //tant qu'il reste des lignes le programme continue
+                    System.out.println("_____________________________________________________________");
+                    int id = tableAnnonce.getInt("id");
+                    String nom = tableAnnonce.getString("nom");
+                    String description = tableAnnonce.getString("description");
+                    int prixInitial = tableAnnonce.getInt("prix Initial");
+                    Timestamp dateDebutEnchere = tableAnnonce.getTimestamp("date du début des enchères");
+                    Timestamp dateFinEnchere = tableAnnonce.getTimestamp("date de la fin des enchères");
+                    int idUtilisateur = tableAnnonce.getInt("id de l'Utilisateur");
+                    System.out.println(id +"   |   " + nom +"   |   " + description + "   |   " + prixInitial + "   |   " + dateDebutEnchere + "   |   " + dateFinEnchere + "   |   "); //Permet d'écrire en ligne
                 }
             }
             } catch (SQLException ex) {
