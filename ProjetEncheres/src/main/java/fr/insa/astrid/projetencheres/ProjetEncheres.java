@@ -47,7 +47,7 @@ public class ProjetEncheres {
 
     public static Connection defautConnect()
             throws ClassNotFoundException, SQLException {
-        return connectGeneralPostGres("localhost", 5432, "postgres", "postgres", "navet");
+        return connectGeneralPostGres("localhost", 5439, "postgres", "postgres", "pass");
     }
      public static void creeSchema(Connection con)
             throws SQLException {
