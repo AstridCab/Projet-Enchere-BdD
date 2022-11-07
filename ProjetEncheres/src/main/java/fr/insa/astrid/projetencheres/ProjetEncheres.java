@@ -469,6 +469,28 @@ public class ProjetEncheres {
             con.setAutoCommit(true);
         }
     }
+     public static void afficherOffre(Connection con) //Permet d'afficher la table des annonces
+            throws SQLException {
+        con.setAutoCommit(false);
+        try ( Statement st = con.createStatement()) {
+            try (ResultSet tableOffre=st.executeQuery("select * from Offre")){                
+                    System.out.println("Table Offre");
+                while (tableOffre.next()){ //tant qu'il reste des lignes le programme continue
+                    System.out.println("______________________________________________________");
+                    Timestamp dateOffre = tableOffre.getTimestamp("dateOffre");
+                    int prixActuel = tableOffre.getInt("prixActuel");
+                    int idUtilisateur = tableOffre.getInt("idUtilisateur");
+                    int idAnnonce = tableOffre.getInt("idAnnonce");
+                    System.out.println(dateOffre +"   |   " + prixActuel +"   |   " + idUtilisateur + "   |   " + idAnnonce); //Permet d'écrire en ligne
+                }
+            }
+            } catch (SQLException ex) {
+            con.rollback();
+            throw ex;
+        } finally {
+            con.setAutoCommit(true);
+        }
+    }
     public static void menu(Connection con){
         int rep = -1;
                 while (rep !=0){
@@ -481,6 +503,7 @@ public class ProjetEncheres {
                     System.out.println("(5) - Afficher la table des Annonces");
                     System.out.println("(6) - Afficher la table des Categories");
                     System.out.println("(7) - Ajouter une nouvelle offre");
+                    System.out.println("(8) - Afficher la table des Offres");
                     System.out.println("=================================");
                     System.out.println("Votre choix :");
                     rep= Lire.i();
@@ -509,6 +532,9 @@ public class ProjetEncheres {
                         }
                         else if (rep==7) {
                             nouvOffre(con);
+                        }
+                        else if (rep==8) {
+                            afficherOffre(con);
                         }
                     } catch(SQLException ex){ 
                         throw new Error(ex);
