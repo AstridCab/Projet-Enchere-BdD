@@ -495,7 +495,7 @@ public class ProjetEncheres {
         int rep = -1;
                 while (rep !=0){
                     System.out.println("Menu");
-                    System.out.println("=================================");
+                    System.out.println("=========================================");
                     System.out.println("(1) - Recreer la Base de Donnee");
                     System.out.println("(2) - Ajouter un nouvel Utilisateur");
                     System.out.println("(3) - Afficher la table des Utilisateur");
@@ -504,13 +504,13 @@ public class ProjetEncheres {
                     System.out.println("(6) - Afficher la table des Categories");
                     System.out.println("(7) - Ajouter une nouvelle offre");
                     System.out.println("(8) - Afficher la table des Offres");
-                    System.out.println("=================================");
+                    System.out.println("=========================================");
                     System.out.println("Votre choix :");
                     rep= Lire.i();
                     try {
                         if (rep==1) {
                             recreerSchema(con);
-                            System.out.println("La Base de Donnee a ete mise a jour");
+                            System.out.println("La Base de Donnee a été mise a jour");
                         }
                         else if (rep==2) {
                             nouvUtilisateur(con);
