@@ -204,7 +204,7 @@ public class ProjetEncheres {
         suppSchema(con);
         creeSchema(con);
     }
-    public static void nouvUtilisateur(Connection con, nomUtilisateur, passUtilisateur) throws SQLException { // Permet de demander des informations à l'utilisateur qui seront rentrées dans la table
+    public static void nouvUtilisateur(Connection con, String nomUtilisateur, String passUtilisateur) throws SQLException { // Permet de demander des informations à l'utilisateur qui seront rentrées dans la table
         con.setAutoCommit(false);
         try ( PreparedStatement pst = con.prepareStatement("insert into utilisateur (nom,pass) values (?,?)")) {
             System.out.println("Nom d'utilisateur :");
