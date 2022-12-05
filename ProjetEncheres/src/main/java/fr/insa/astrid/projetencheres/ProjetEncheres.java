@@ -61,8 +61,12 @@ public class ProjetEncheres {
                     create table utilisateur (
                         id integer not null primary key
                         generated always as identity,
-                        nom varchar(30) not null unique,
-                        pass varchar(30) not null)
+                        pseudo varchar (20) not null unique
+                        nom varchar(30) not null,
+                        prenom varchar (20) not null,
+                        pass varchar(30) not null,
+                        email varchar (50) not null unique,
+                        codePostal integer not null)
                     """);
            // si j'arrive jusqu'ici, c'est que tout s'est bien passé
             // je confirme (commit) la transaction
@@ -204,15 +208,27 @@ public class ProjetEncheres {
         suppSchema(con);
         creeSchema(con);
     }
-    public static void nouvUtilisateur(Connection con, String nomUtilisateur, String passUtilisateur) throws SQLException { // Permet de demander des informations à l'utilisateur qui seront rentrées dans la table
+    public static void nouvUtilisateur(Connection con, String pseudo, String nomUtilisateur, String prenom, int codePostal, String email, String pass) throws SQLException { // Permet de demander des informations à l'utilisateur qui seront rentrées dans la table
         con.setAutoCommit(false);
-        try ( PreparedStatement pst = con.prepareStatement("insert into utilisateur (nom,pass) values (?,?)")) {
+        try ( PreparedStatement pst = con.prepareStatement("insert into utilisateur (pseudo,nom,prenom,codePostal,email,pass) values (?,?,?,?,?,?)")) {
+            System.out.println("Pseudo d'utilisateur :");
+            //String pseudo = Lire.S();
             System.out.println("Nom d'utilisateur :");
             //String nom = Lire.S();
+            System.out.println("Prenom d'utilisateur :");
+            //String prenom = Lire.S();
+            System.out.println("Code Postal d'utilisateur :");
+            //int code postal = Lire.i();
+            System.out.println("email d'utilisateur :");
+            //String email = Lire.S();
             System.out.println("Mot de pass :");
             //String pass = Lire.S();
-            pst.setString(1, nomUtilisateur);
-            pst.setString(2, passUtilisateur);
+            pst.setString(1, pseudo);
+            pst.setString(2, nomUtilisateur);
+            pst.setString(3, prenom);
+            pst.setInt(4, codePostal);
+            pst.setString(5, email);
+            pst.setString(6, pass);
             pst.executeUpdate();
         } catch(SQLException ex){
             con.rollback();
