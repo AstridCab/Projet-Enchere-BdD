@@ -204,15 +204,15 @@ public class ProjetEncheres {
         suppSchema(con);
         creeSchema(con);
     }
-    public static void nouvUtilisateur(Connection con) throws SQLException { // Permet de demander des informations à l'utilisateur qui seront rentrées dans la table
+    public static void nouvUtilisateur(Connection con, nomUtilisateur, passUtilisateur) throws SQLException { // Permet de demander des informations à l'utilisateur qui seront rentrées dans la table
         con.setAutoCommit(false);
         try ( PreparedStatement pst = con.prepareStatement("insert into utilisateur (nom,pass) values (?,?)")) {
             System.out.println("Nom d'utilisateur :");
-            String nom = Lire.S();
+            //String nom = Lire.S();
             System.out.println("Mot de pass :");
-            String pass = Lire.S();
-            pst.setString(1, nom);
-            pst.setString(2, pass);
+            //String pass = Lire.S();
+            pst.setString(1, nomUtilisateur);
+            pst.setString(2, passUtilisateur);
             pst.executeUpdate();
         } catch(SQLException ex){
             con.rollback();
