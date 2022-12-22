@@ -27,7 +27,7 @@ public class ProjetEncheres {
     public static void main(String[] args) {
         try ( Connection con = defautConnect()) {
             System.out.println("Vous êtes connecté !");
-            menu(con);
+           // menu(con);
         } catch (Exception ex) {
             throw new Error(ex);
         }
@@ -329,10 +329,8 @@ public class ProjetEncheres {
             }
             System.out.println("Nom d'Utilisateur :");
             String nomUtilisateur = Lire.S();
-            System.out.println("Mot de pass :");
-            String pass = Lire.S();
             afficherAnnonce(con);
-            int idUtilisateur = identifiantUtilisateur(con, nomUtilisateur,pass);
+            int idUtilisateur = identifiantUtilisateur(con, nomUtilisateur);
             pst.setTimestamp(1, dateOffre);
             pst.setInt(2, prixActuel);
             pst.setInt(3, idUtilisateur);
@@ -504,55 +502,55 @@ public class ProjetEncheres {
             con.setAutoCommit(true);
         }
     }
-    public static void menu(Connection con){
-        int rep = -1;
-                while (rep !=0){
-                    System.out.println("Menu");
-                    System.out.println("=========================================");
-                    System.out.println("(1) - Recreer la Base de Donnee");
-                    System.out.println("(2) - Ajouter un nouvel Utilisateur");
-                    System.out.println("(3) - Afficher la table des Utilisateur");
-                    System.out.println("(4) - Ajouter une nouvelle Annonce");
-                    System.out.println("(5) - Afficher la table des Annonces");
-                    System.out.println("(6) - Afficher la table des Categories");
-                    System.out.println("(7) - Ajouter une nouvelle offre");
-                    System.out.println("(8) - Afficher la table des Offres");
-                    System.out.println("=========================================");
-                    System.out.println("Votre choix :");
-                    rep= Lire.i();
-                    try {
-                        if (rep==1) {
-                            recreerSchema(con);
-                            System.out.println("La Base de Donnee a été mise a jour");
-                        }
-                        else if (rep==2) {
-                            nouvUtilisateur(con);
-                            System.out.println("Bienvenue");
-                        }
-                        else if (rep==3) {
-                            afficherUtilisateur(con);
-                        }
-                        else if (rep==4) {
-                            nouvAnnonce(con);
-                            System.out.println("Annonce ajoutée");
-                        }
-                        else if (rep==5) {
-                            afficherAnnonce(con);
-                        }
-                        else if (rep==6) {
-                            categorie(con);
-                            afficherCategorie(con);
-                        }
-                        else if (rep==7) {
-                            nouvOffre(con);
-                        }
-                        else if (rep==8) {
-                            afficherOffre(con);
-                        }
-                    } catch(SQLException ex){ 
-                        throw new Error(ex);
-                    }
-                }
-    }
+//    public static void menu(Connection con){
+//        int rep = -1;
+//                while (rep !=0){
+//                    System.out.println("Menu");
+//                    System.out.println("=========================================");
+//                    System.out.println("(1) - Recreer la Base de Donnee");
+//                    System.out.println("(2) - Ajouter un nouvel Utilisateur");
+//                    System.out.println("(3) - Afficher la table des Utilisateur");
+//                    System.out.println("(4) - Ajouter une nouvelle Annonce");
+//                    System.out.println("(5) - Afficher la table des Annonces");
+//                    System.out.println("(6) - Afficher la table des Categories");
+//                    System.out.println("(7) - Ajouter une nouvelle offre");
+//                    System.out.println("(8) - Afficher la table des Offres");
+//                    System.out.println("=========================================");
+//                    System.out.println("Votre choix :");
+//                    rep= Lire.i();
+//                    try {
+//                        if (rep==1) {
+//                            recreerSchema(con);
+//                            System.out.println("La Base de Donnee a été mise a jour");
+//                        }
+//                        else if (rep==2) {
+//                            nouvUtilisateur(con);
+//                            System.out.println("Bienvenue");
+//                        }
+//                        else if (rep==3) {
+//                            afficherUtilisateur(con);
+//                        }
+//                        else if (rep==4) {
+//                            nouvAnnonce(con);
+//                            System.out.println("Annonce ajoutée");
+//                        }
+//                        else if (rep==5) {
+//                            afficherAnnonce(con);
+//                        }
+//                        else if (rep==6) {
+//                            categorie(con);
+//                            afficherCategorie(con);
+//                        }
+//                        else if (rep==7) {
+//                            nouvOffre(con);
+//                        }
+//                        else if (rep==8) {
+//                            afficherOffre(con);
+//                        }
+//                    } catch(SQLException ex){ 
+//                        throw new Error(ex);
+//                    }
+//                }
+//    }
 }
 
