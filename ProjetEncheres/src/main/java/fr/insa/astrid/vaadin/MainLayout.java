@@ -37,21 +37,28 @@ public class MainLayout extends AppLayout{
     }
 
     private void createDrawer() {
-        RouterLink vueConnectionInscription = new RouterLink("Connection | Inscription", VueConnectionInscription.class);
+        RouterLink vueInscription = new RouterLink("Inscription", VueInscription.class);
         RouterLink vueAnnonces = new RouterLink("Annonces", VueAnnonces.class);
         RouterLink vueMenu = new RouterLink("Menu", Menu.class);
         RouterLink pageDeposerAnnonce = new RouterLink("Déposer une annonce", PageDeposerAnnonce.class);
         RouterLink vueLogin = new RouterLink("Login", VueLogin.class);
         RouterLink vueUtilisateurs = new RouterLink("Utilisateurs", VueUtilisateurs.class);
         
-        vueConnectionInscription.setHighlightCondition(HighlightConditions.sameLocation());
+        vueInscription.setHighlightCondition(HighlightConditions.sameLocation());
         vueAnnonces.setHighlightCondition(HighlightConditions.sameLocation());
         vueMenu.setHighlightCondition(HighlightConditions.sameLocation());
         pageDeposerAnnonce.setHighlightCondition(HighlightConditions.sameLocation());
         vueLogin.setHighlightCondition(HighlightConditions.sameLocation());
         vueUtilisateurs.setHighlightCondition(HighlightConditions.sameLocation());
     
-        addToDrawer(new VerticalLayout(vueLogin,vueMenu,pageDeposerAnnonce, vueConnectionInscription));
+        addToDrawer(new VerticalLayout(
+                vueLogin,
+                vueMenu, 
+                vueInscription,
+                vueUtilisateurs,
+                pageDeposerAnnonce,
+                vueAnnonces
+        ));
 
     }
     

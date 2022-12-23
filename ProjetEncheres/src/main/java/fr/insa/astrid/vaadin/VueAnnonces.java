@@ -4,6 +4,7 @@
  */
 package fr.insa.astrid.vaadin;
 
+import Objets.Annonce;
 import com.vaadin.flow.component.combobox.MultiSelectComboBox;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.notification.Notification;
@@ -51,7 +52,8 @@ public class VueAnnonces extends VerticalLayout{
         
         // grille avec toutes les annonces
         grid.setColumns("idAnnonce","nomProduit", "prixInitial",
-                "description","etatEnchere","dateDebutEnchere","dateFinEnchere");
+                "description","etatEnchere","dateDebutEnchere",
+                "dateFinEnchere");
         grid.setAllRowsVisible(true);
     }
     

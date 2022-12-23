@@ -26,7 +26,8 @@ public class VueLogin extends VerticalLayout {
 		setAlignItems(FlexComponent.Alignment.CENTER); 
 		setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
 
-		connection.setAction("Menu");  
+		// ça envoie sur la page du menu quand on se connecte
+                connection.setAction("Menu");  
 
 		VerticalLayout vLayout = new VerticalLayout();
 		vLayout.add(new H1("Connection"), new Span("Nom d'utilisateur : user"), new Span("Mot de passe: pass"));

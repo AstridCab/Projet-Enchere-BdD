@@ -5,6 +5,7 @@
 
 package fr.insa.astrid.projetencheres;
 
+import Objets.Utilisateur;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -14,6 +15,8 @@ import fr.insa.astrid.lire.Lire;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 
 //bonjour
@@ -24,14 +27,21 @@ import java.time.Instant;
  */
 public class ProjetEncheres {
 
+    
+    
     public static void main(String[] args) {
         try ( Connection con = defautConnect()) {
             System.out.println("Vous êtes connecté !");
-            menu(con);
+            //creeSchema(con);
+            //menu(con);
+            Utilisateur utilisateur = new Utilisateur();
+            afficherUtilisateur(con, utilisateur);
+
         } catch (Exception ex) {
             throw new Error(ex);
-        }
+        }   
     }
+            
         public static Connection connectGeneralPostGres(String host, //methode qui permet de se connecter à une base de données
             int port, String database,
             String user, String pass)
@@ -61,7 +71,7 @@ public class ProjetEncheres {
                     create table utilisateur (
                         id integer not null primary key
                         generated always as identity,
-                        pseudo varchar (20) not null unique
+                        pseudo varchar (20) not null unique,
                         nom varchar(30) not null,
                         prenom varchar (20) not null,
                         pass varchar(30) not null,
@@ -208,7 +218,10 @@ public class ProjetEncheres {
         suppSchema(con);
         creeSchema(con);
     }
-    public static void nouvUtilisateur(Connection con, String pseudo, String nom, String prenom, int codePostal, String email, String pass) throws SQLException { // Permet de demander des informations à l'utilisateur qui seront rentrées dans la table
+    public static void nouvUtilisateur(Connection con, String pseudo, String nom, String prenom, 
+                                        String codePostal, String email, String pass) 
+                                        throws SQLException { 
+        // Permet de demander des informations à l'utilisateur qui seront rentrées dans la table
         con.setAutoCommit(false);
         try ( PreparedStatement pst = con.prepareStatement("insert into utilisateur (pseudo,nom,prenom,codePostal,email,pass) values (?,?,?,?,?,?)")) {
             System.out.println("Pseudo d'utilisateur :");
@@ -226,7 +239,7 @@ public class ProjetEncheres {
             pst.setString(1, pseudo);
             pst.setString(2, nom);
             pst.setString(3, prenom);
-            pst.setInt(4, codePostal);
+            pst.setString(4, codePostal);
             pst.setString(5, email);
             pst.setString(6, pass);
             pst.executeUpdate();
@@ -238,7 +251,10 @@ public class ProjetEncheres {
             con.setAutoCommit(true);
         }
     }
-    public static void nouvAnnonce(Connection con, String pseudo, String titre, String description, Timestamp dateDebutEnchere, Timestamp dateFinEnchere, String type, int prixInitial) throws SQLException { // Permet de demander des informations à l'utilisateur qui seront rentrées dans la table Annonce
+    public static void nouvAnnonce(Connection con, String pseudo, String titre, String description, 
+                                    Timestamp dateDebutEnchere, Timestamp dateFinEnchere, 
+                                    String type, int prixInitial) throws SQLException { 
+        // Permet de demander des informations à l'utilisateur qui seront rentrées dans la table Annonce
         con.setAutoCommit(false);
         try ( PreparedStatement pst = con.prepareStatement("insert into annonce (idUtilisateur,titre,description,dateDebutEnchere,dateFinEnchere,idType,prixInitial) values (?,?,?,?,?,?,?)")) {
             System.out.println("Pseudo d'Utilisateur :");
@@ -275,6 +291,8 @@ public class ProjetEncheres {
             con.setAutoCommit(true);
         }
     }
+    
+    
     public static int identifiantUtilisateur(Connection con, String pseudo)throws SQLException {
         con.setAutoCommit(false);
         int id = -1 ; //cela permet au programme de renvoyer une valeur même s'il y a une erreur avec le rollback (-1 car cette valeur est impossible dans le tableau id)
@@ -332,10 +350,10 @@ public class ProjetEncheres {
             System.out.println("Mot de pass :");
             String pass = Lire.S();
             afficherAnnonce(con);
-            int idUtilisateur = identifiantUtilisateur(con, nomUtilisateur,pass);
+            //int idUtilisateur = identifiantUtilisateur(con, nomUtilisateur,pass);
             pst.setTimestamp(1, dateOffre);
             pst.setInt(2, prixActuel);
-            pst.setInt(3, idUtilisateur);
+            //pst.setInt(3, idUtilisateur);
             pst.setInt(4, idAnnonce);
             pst.executeUpdate();
         } catch(SQLException ex){
@@ -435,19 +453,29 @@ public class ProjetEncheres {
             con.setAutoCommit(true);
         }
     }
-    public static void afficherUtilisateur(Connection con) //Permet d'afficher la table utilisateur
+    public static List<Utilisateur> afficherUtilisateur(Connection con, Utilisateur utilisateur) //Permet d'afficher la table utilisateur
             throws SQLException {
         con.setAutoCommit(false);
         try ( Statement st = con.createStatement()) {
             try (ResultSet tableUtilisateur=st.executeQuery("select * from Utilisateur")){                
                     System.out.println("Table Utilisateur");
+                    
+                    List<Utilisateur> listeUtilisateurs = new ArrayList<Utilisateur>();
+                    
                 while (tableUtilisateur.next()){ //tant qu'il reste des lignes le programme continue
-                    System.out.println("______________________________________________");
-                    int id = tableUtilisateur.getInt("id");
-                    String nom = tableUtilisateur.getString("nom");
-                    String pass = tableUtilisateur.getString("pass");
-                    System.out.println(id +"   |   " + nom +"   |   " + pass); //Permet d'écrire en ligne
+                    //System.out.println("______________________________________________");
+                 
+                    utilisateur.setPseudo(tableUtilisateur.getString("pseudo"));
+                    utilisateur.setNom(tableUtilisateur.getString("nom"));
+                    utilisateur.setPrenom(tableUtilisateur.getString("prenom"));
+                    utilisateur.setCodePostal(tableUtilisateur.getString("codePostal"));
+                    utilisateur.setEmail(tableUtilisateur.getString("email"));
+                    utilisateur.setPrenom(tableUtilisateur.getString("nom"));
+                    
+                    listeUtilisateurs.add(utilisateur);
+                    //System.out.println(id +"   |   " + nom +"   |   " + pass); //Permet d'écrire en ligne
                 }
+                return listeUtilisateurs;
             }
             } catch (SQLException ex) {
             con.rollback();
@@ -504,6 +532,8 @@ public class ProjetEncheres {
             con.setAutoCommit(true);
         }
     }
+     
+     
     public static void menu(Connection con){
         int rep = -1;
                 while (rep !=0){
@@ -526,14 +556,14 @@ public class ProjetEncheres {
                             System.out.println("La Base de Donnee a été mise a jour");
                         }
                         else if (rep==2) {
-                            nouvUtilisateur(con);
+                            //nouvUtilisateur(con);
                             System.out.println("Bienvenue");
                         }
                         else if (rep==3) {
-                            afficherUtilisateur(con);
+                            //afficherUtilisateur(con);
                         }
                         else if (rep==4) {
-                            nouvAnnonce(con);
+                            //nouvAnnonce(con);
                             System.out.println("Annonce ajoutée");
                         }
                         else if (rep==5) {
