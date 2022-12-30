@@ -1,6 +1,5 @@
 package fr.insa.astrid.vaadin;
 
-import com.sun.jna.platform.win32.Sspi.TimeStamp;
 import com.vaadin.flow.component.button.Button;
 import java.sql.Timestamp;
 import java.text.DateFormat;
