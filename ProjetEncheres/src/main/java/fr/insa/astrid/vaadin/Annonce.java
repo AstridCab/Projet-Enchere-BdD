@@ -1,5 +1,8 @@
 package fr.insa.astrid.vaadin;
 
+import com.sun.jna.platform.win32.Sspi.TimeStamp;
+import com.vaadin.flow.component.button.Button;
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -14,6 +17,10 @@ public class Annonce {
     @NotEmpty
     private Double prixInitial;
     
+    @NotNull
+    @NotEmpty
+    private Double prixActuel;
+    
     @NotEmpty
     private String description = "";    
 
@@ -27,23 +34,30 @@ public class Annonce {
 
     @NotEmpty
     @NotNull
-    private Integer idType;
+    private Integer idCategorie;
     
     @NotEmpty
     private Boolean etatEnchere;
     
     @NotEmpty
-    private DateFormat dateDebutEnchere;
+    private Timestamp dateDebutEnchere;
     
     @NotEmpty
-    private DateFormat dateFinEnchere;
+    private Timestamp dateFinEnchere;
+    
+    public Button encherir = new Button("Encherir");
+    
+    
+    public Annonce(){
+
+    }
 
     public Integer getIdType() {
-        return idType;
+        return idCategorie;
     }
 
     public void setIdType(Integer idType) {
-        this.idType = idType;
+        this.idCategorie = idType;
     }
 
     public Boolean getEtatEnchere() {
@@ -54,19 +68,19 @@ public class Annonce {
         this.etatEnchere = etatEnchere;
     }
 
-    public DateFormat getDateDebutEnchere() {
+    public Timestamp getDateDebutEnchere() {
         return dateDebutEnchere;
     }
 
-    public void setDateDebutEnchere(DateFormat dateDebutEnchere) {
+    public void setDateDebutEnchere(Timestamp dateDebutEnchere) {
         this.dateDebutEnchere = dateDebutEnchere;
     }
 
-    public DateFormat getDateFinEnchere() {
+    public Timestamp getDateFinEnchere() {
         return dateFinEnchere;
     }
 
-    public void setDateFinEnchere(DateFormat dateFinEnchere) {
+    public void setDateFinEnchere(Timestamp dateFinEnchere) {
         this.dateFinEnchere = dateFinEnchere;
     }
 
@@ -115,5 +129,21 @@ public class Annonce {
     public void setNomProduit(String nomProduit) {
         this.nomProduit = nomProduit;
     }
+    
+    public Integer getIdCategorie() {
+        return idCategorie;
+    }
+
+    public void setIdCategorie(Integer idCategorie) {
+        this.idCategorie = idCategorie;
+    }
+
+    public Double getPrixActuel() {
+        return prixActuel;
+    }
+
+    public void setPrixActuel(Double prixActuel) {
+        this.prixActuel = prixActuel;
+    }    
 
 }

@@ -16,8 +16,11 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import java.util.HashSet;
-import java.util.Set;
+import fr.insa.astrid.projetencheres.ProjetEncheres;
+import static fr.insa.astrid.projetencheres.ProjetEncheres.defautConnect;
+import java.sql.Connection;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 /**
  *
@@ -31,19 +34,27 @@ import java.util.Set;
 
 public class PageDeposerAnnonce extends VerticalLayout{
     
-    String nomUtilisateur = new String();
-    String nomProduit = new String();
-    String description = new String();
-    String Categorie = new String();
-    double prixInital;
-    //DateTime
+    TextField nomUtilisateur_tf = new TextField("Votre nom d'utilisateur");
+    TextArea nomProduit_tf = new TextArea("Un titre pour votre annonce");
+    TextArea description_tf = new TextArea("Une description de votre produit");
+    MultiSelectComboBox categorie_CB = new MultiSelectComboBox<>("Une catégorie");
+    NumberField prixInitial_tf = new NumberField ("Un prix de départ");
+    DateTimePicker dateDebutEnchere_dtp = new DateTimePicker("Une date de debut d'enchère");
+    DateTimePicker dateFinEnchere_dtp = new DateTimePicker("Une date de fin d'enchère");
+    Button boutonValider = new Button("Valider");
     
 
     public PageDeposerAnnonce(){
         
-        H1 titre = new H1 ("Pour déposer une annonce, il nous faut :");
+        creerAnnonce();
+        deposerAnnonce();
         
-        TextField nomUtilisateur_tf = new TextField("Votre nom d'utilisateur");
+    }
+        
+    private void creerAnnonce(){
+        
+        H1 titre = new H1 ("Pour déposer une annonce, il nous faut :");
+               
         nomUtilisateur_tf.setMaxLength(20);
         nomUtilisateur_tf.setValueChangeMode(ValueChangeMode.EAGER);
         nomUtilisateur_tf.addValueChangeListener(e -> {
@@ -51,7 +62,6 @@ public class PageDeposerAnnonce extends VerticalLayout{
                    .setHelperText(e.getValue().length() + "/" + 20);
         });
         
-        TextArea nomProduit_tf = new TextArea("Un titre pour votre annonce");
         nomProduit_tf.setSizeFull();
         nomProduit_tf.setMaxLength(50);
         nomProduit_tf.setValueChangeMode(ValueChangeMode.EAGER);
@@ -60,7 +70,6 @@ public class PageDeposerAnnonce extends VerticalLayout{
                    .setHelperText(e.getValue().length() + "/" + 50);
         });
         
-        TextArea description_tf = new TextArea("Une description de votre produit");
         description_tf.setSizeFull();
         description_tf.setMaxLength(2000);
         description_tf.setValueChangeMode(ValueChangeMode.EAGER);
@@ -69,16 +78,10 @@ public class PageDeposerAnnonce extends VerticalLayout{
                    .setHelperText(e.getValue().length() + "/" + 2000);
         });
         
-        MultiSelectComboBox comboBox = new MultiSelectComboBox<>("Une catégorie");
-        comboBox.setItems("Tout", "Meubles","Vêtements","Bijoux", "Autres");
+        categorie_CB.setItems("Tout", "Meubles","Vêtements","Bijoux", "Autres");
         
-        NumberField prixInitial_tf = new NumberField ("Un prix de départ");
         prixInitial_tf.setWidth("500");
         
-        
-        DateTimePicker dateFinEnchere_dtp = new DateTimePicker("Une date de fin d'enchère");
-        
-        Button boutonValider = new Button("Valider");
         boutonValider.setSizeFull();
         boutonValider.addClickListener((t)-> {
            Notification.show("bouton valider clické");
@@ -86,9 +89,43 @@ public class PageDeposerAnnonce extends VerticalLayout{
         });
           
         this.add(titre,nomUtilisateur_tf,nomProduit_tf,
-                description_tf,comboBox,description_tf,
-                dateFinEnchere_dtp,comboBox,prixInitial_tf, boutonValider);
+                description_tf,dateDebutEnchere_dtp,dateFinEnchere_dtp,
+                categorie_CB,prixInitial_tf, boutonValider);
         
+    }
+    
+    private void deposerAnnonce() {
+          
+        categorie_CB.addValueChangeListener(e -> {
+            String categorie1 = e.getValue().toString();
+               
+        boutonValider.addClickListener((event) -> {
+            try (Connection con = defautConnect()) {
+                System.out.println("Vous êtes connecté !");
+
+                String nomUtilisateur = nomUtilisateur_tf.getValue();
+                String nomProduit = nomProduit_tf.getValue();
+                String description = description_tf.getValue();
+                LocalDateTime dateDebutEnchere_ldt = dateDebutEnchere_dtp.getValue();
+                Timestamp dateDebutEnchere_ts = Timestamp.valueOf(dateDebutEnchere_ldt);
+                LocalDateTime dateFinEnchere_ldt = dateFinEnchere_dtp.getValue();
+                Timestamp dateFinEnchere_ts = Timestamp.valueOf(dateFinEnchere_ldt);
+                String categorie2 = categorie1;
+                
+                Notification.show("Annonce "+ nomProduit +" déposée");
+    
+                Double prixInitial_d = prixInitial_tf.getValue();
+                int prixInitial_i = prixInitial_d.intValue();
+            
+            ProjetEncheres.nouvAnnonce(con, nomUtilisateur, nomProduit, 
+                                            description, dateDebutEnchere_ts, dateFinEnchere_ts,
+                                            categorie2, prixInitial_i);
+            
+            } catch (Exception ex) {
+            throw new Error(ex);
+        }
+        });
+        });
     }
     
 }
