@@ -1,11 +1,7 @@
 fr\insa\astrid\vaadin\Application.class
 fr\insa\astrid\vaadin\VueLogin.class
 fr\insa\astrid\vaadin\AnnonceForm.class
-fr\insa\astrid\vaadin\Enchere.class
 fr\insa\astrid\vaadin\UtilisateurForm.class
 fr\insa\astrid\vaadin\VueUtilisateurs.class
-fr\insa\astrid\vaadin\Annonce.class
 fr\insa\astrid\lire\Lire.class
-fr\insa\astrid\vaadin\Utilisateur.class
-fr\insa\astrid\vaadin\ajoutEnchere.class
 fr\insa\astrid\vaadin\Menu.class

@@ -46,22 +46,9 @@ public class VueUtilisateurs extends VerticalLayout{
         
         configureGrid();
         configureFiltreRecherche();
-//        
-//        updateGrid();
-//        
-//        UtilisateurForm form = new UtilisateurForm();
-//        
-//        HorizontalLayout hLayout = new HorizontalLayout(grid,form);
-//        hLayout.setSizeFull();
-//        
-//        VerticalLayout vLayout = new VerticalLayout(filtreRecherche_tf,hLayout);
-//        vLayout.setSizeFull();
-//        
-//        this.add(vLayout);
 
-          //grid.addColumn(Utilisateur::getPseudo);
-          afficheUtilisateurs(utilisateur);
-          add(grid);
+        afficheUtilisateurs(utilisateur);
+        add(grid);
           
     }
 
@@ -73,12 +60,6 @@ public class VueUtilisateurs extends VerticalLayout{
         grid.setAllRowsVisible(true);
               
     }
-
-//    public void updateGrid() {
-//        Utilisateur p1 = ajoutPersonne();
-//        //listePersonnes.add(p1);
-//        //grid.setItems(listePersonnes);
-//    }
 
     private void configureFiltreRecherche() {
         filtreRecherche_tf.setPlaceholder("Filtre par nom...");

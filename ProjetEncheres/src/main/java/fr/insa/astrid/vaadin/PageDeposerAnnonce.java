@@ -20,11 +20,7 @@ import fr.insa.astrid.projetencheres.ProjetEncheres;
 import static fr.insa.astrid.projetencheres.ProjetEncheres.defautConnect;
 import java.sql.Connection;
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  *

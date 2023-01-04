@@ -1,6 +1,7 @@
 package Objets;
 
 import com.vaadin.flow.component.button.Button;
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -34,10 +35,10 @@ public class Annonce {
     private Boolean etatEnchere;
     
     @NotEmpty
-    private DateFormat dateDebutEnchere;
+    private Timestamp dateDebutEnchere;
     
     @NotEmpty
-    private DateFormat dateFinEnchere;
+    private Timestamp dateFinEnchere;
     
     public Button encherir = new Button("Encherir");
     
@@ -62,19 +63,19 @@ public class Annonce {
         this.etatEnchere = etatEnchere;
     }
 
-    public DateFormat getDateDebutEnchere() {
+    public Timestamp getDateDebutEnchere() {
         return dateDebutEnchere;
     }
 
-    public void setDateDebutEnchere(DateFormat dateDebutEnchere) {
+    public void setDateDebutEnchere(Timestamp dateDebutEnchere) {
         this.dateDebutEnchere = dateDebutEnchere;
     }
 
-    public DateFormat getDateFinEnchere() {
+    public Timestamp getDateFinEnchere() {
         return dateFinEnchere;
     }
 
-    public void setDateFinEnchere(DateFormat dateFinEnchere) {
+    public void setDateFinEnchere(Timestamp dateFinEnchere) {
         this.dateFinEnchere = dateFinEnchere;
     }
 
