@@ -4,7 +4,7 @@
  */
 package fr.insa.astrid.vaadin;
 
-import fr.insa.astrid.vaadin.Utilisateur;
+import Objets.Utilisateur;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
