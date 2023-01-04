@@ -29,15 +29,16 @@ public class UtilisateurForm extends FormLayout{
     Button delete = new Button("Delete");
     Button close = new Button("Close");
     
-    HorizontalLayout hLayout = new HorizontalLayout();
-    
+    HorizontalLayout hLayout = new HorizontalLayout();   
     Binder<Utilisateur> binder = new BeanValidationBinder <>(Utilisateur.class);
     
     
     public UtilisateurForm(){
         
-        binder.bindInstanceFields(this);
+        Utilisateur utilisateur = new Utilisateur();
         
+        binder.bindInstanceFields(this);
+        setUtilisateur(utilisateur);
         afficheComposants();
      
     }
