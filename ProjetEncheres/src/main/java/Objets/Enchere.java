@@ -4,7 +4,7 @@
  */
 package Objets;
 
-import java.text.DateFormat;
+import java.sql.Timestamp;
 import javax.validation.constraints.NotEmpty;
 
 /**
@@ -14,10 +14,10 @@ import javax.validation.constraints.NotEmpty;
 public class Enchere {
     
     @NotEmpty
-    private DateFormat dateEnchere;
+    private Timestamp dateEnchere;
     
     @NotEmpty
-    private Double prixActuel;
+    private int prixEnchere;
     
     @NotEmpty
     private Integer idUtilisateur;
@@ -25,20 +25,20 @@ public class Enchere {
     @NotEmpty
     private Integer idAnnonce;
 
-    public DateFormat getDateOffre() {
+    public Timestamp getDateOffre() {
         return dateEnchere;
     }
 
-    public void setDateOffre(DateFormat dateOffre) {
+    public void setDateOffre(Timestamp dateOffre) {
         this.dateEnchere = dateEnchere;
     }
 
-    public Double getPrixActuel() {
-        return prixActuel;
+    public int getPrixEnchere() {
+        return prixEnchere;
     }
 
-    public void setPrixActuel(Double prixActuel) {
-        this.prixActuel = prixActuel;
+    public void setPrixEnchere(int prixActuel) {
+        this.prixEnchere = prixActuel;
     }
 
     public Integer getIdUtilisateur() {

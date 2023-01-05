@@ -6,6 +6,7 @@
 package fr.insa.astrid.projetencheres;
 
 import Objets.Annonce;
+import Objets.Enchere;
 import Objets.Utilisateur;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -34,7 +35,9 @@ public class ProjetEncheres {
             //creeSchema(con);
             Utilisateur utilisateur = new Utilisateur();
             Annonce annonce = new Annonce();
-            menu(con, annonce, utilisateur);
+            Enchere enchere = new Enchere();
+            
+            menu(con, annonce, utilisateur, enchere);
 
             //afficherUtilisateur(con, utilisateur);
 
@@ -342,24 +345,31 @@ public class ProjetEncheres {
     return id ;
     }
     
-    public static void nouvOffre(Connection con, Annonce annonce) throws SQLException { // Permet de demander des informations à l'utilisateur qui seront rentrées dans la table Offre
+    public static void nouvOffre(Connection con, Annonce annonce, Enchere enchere) throws SQLException { // Permet de demander des informations à l'utilisateur qui seront rentrées dans la table Offre
         con.setAutoCommit(false);
-        try ( PreparedStatement pst = con.prepareStatement("insert into offre (dateOffre,prixActuel,idUtilisateur,idAnnonce) values (?,?,?,?)")) {
+        try ( PreparedStatement pst = con.prepareStatement(
+                "insert into offre (dateOffre,prixActuel,idUtilisateur,idAnnonce) values (?,?,?,?)")) 
+        {
             afficherAnnonce(con);
+            
             System.out.println("id de l'Annonce sur laquelle vous voulez enchérir : ");
             int idAnnonce = Lire.i();
             Timestamp dateOffre = Timestamp.from(Instant.now());
             int ancienPrix = enchere(con, idAnnonce);
+            
             System.out.println("Prix de votre offre : ");
             int prixActuel = Lire.i();
             while (prixActuel < ancienPrix ){
                 System.out.println("Prix de votre offre : ");
                 prixActuel = Lire.i();
             }
+            
             System.out.println("Nom d'Utilisateur :");
             String nomUtilisateur = Lire.S();
+            
             System.out.println("Mot de pass :");
             String pass = Lire.S();
+            
             afficherAnnonce(con);
             //int idUtilisateur = identifiantUtilisateur(con, nomUtilisateur,pass);
             pst.setTimestamp(1, dateOffre);
@@ -585,7 +595,7 @@ public class ProjetEncheres {
     }
      
      
-    public static void menu(Connection con, Annonce annonce, Utilisateur utilisateur){
+    public static void menu(Connection con, Annonce annonce, Utilisateur utilisateur, Enchere enchere){
         int rep = -1;
                 while (rep !=0){
                     System.out.println("Menu");
@@ -625,7 +635,7 @@ public class ProjetEncheres {
                             afficherCategorie(con);
                         }
                         else if (rep==7) {
-                            nouvOffre(con, annonce);
+                            nouvOffre(con, annonce, enchere);
                         }
                         else if (rep==8) {
                             afficherOffre(con);
