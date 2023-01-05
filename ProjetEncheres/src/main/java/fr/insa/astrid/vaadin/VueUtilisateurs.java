@@ -7,9 +7,7 @@ package fr.insa.astrid.vaadin;
 
 import Objets.Utilisateur;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
@@ -30,15 +28,12 @@ import java.util.List;
 @Route(value = "vueUtilisateurs", layout = MainLayout.class)
 @PageTitle("Utilisateurs")
 
-public class VueUtilisateurs extends VerticalLayout{
+public class VueUtilisateurs extends HorizontalLayout{
     
     Grid <Utilisateur> grid = new Grid<>(Utilisateur.class);
-    
     TextField filtreRecherche_tf = new TextField();
+    UtilisateurForm form = new UtilisateurForm();
     
-    List <Utilisateur> listePersonnes = new ArrayList<Utilisateur>();
-    
-    Utilisateur utilisateur = new Utilisateur();
     
     public VueUtilisateurs(){
         
@@ -46,9 +41,11 @@ public class VueUtilisateurs extends VerticalLayout{
         
         configureGrid();
         configureFiltreRecherche();
-
-        afficheUtilisateurs(utilisateur);
-        add(grid);
+ 
+        this.add(grid, form);
+        afficheUtilisateurs();
+        
+        closeEditor();
           
     }
 
@@ -58,6 +55,10 @@ public class VueUtilisateurs extends VerticalLayout{
         grid.setColumns("pseudo", "nom", "prenom", 
                 "email", "codePostal");
         grid.setAllRowsVisible(true);
+        
+        grid.asSingleSelect().addValueChangeListener((event) ->{
+           editUtilisateur(event.getValue()); 
+        });
               
     }
 
@@ -67,18 +68,32 @@ public class VueUtilisateurs extends VerticalLayout{
         filtreRecherche_tf.setValueChangeMode(ValueChangeMode.LAZY);
     }
 
-    private void afficheUtilisateurs(Utilisateur utilisateur) {
+    private void afficheUtilisateurs() {
                     
         List<Utilisateur> listeUtilisateurs = new ArrayList<Utilisateur>();
         
         try (Connection con = defautConnect()) {
-            listeUtilisateurs = ProjetEncheres.afficherUtilisateur(con, utilisateur);       
+            listeUtilisateurs = ProjetEncheres.afficherUtilisateur(con);       
         } catch (Exception ex) {
             throw new Error(ex);
         }
-        int L = listeUtilisateurs.size();
         
         grid.setItems(listeUtilisateurs);
+    }
+
+    private void closeEditor() {
+        form.setUtilisateur(null);
+        form.setVisible(false);
+        
+    }
+
+    private void editUtilisateur(Utilisateur utilisateur) {
+        if (utilisateur == null){
+            closeEditor();
+        }else{
+            form.setUtilisateur(utilisateur);
+            form.setVisible(true);
         }
+    }
     
 }

@@ -60,7 +60,8 @@ public class ProjetEncheres {
             throws ClassNotFoundException, SQLException {
         return connectGeneralPostGres("localhost", 5439, "postgres", "postgres", "pass");
     }
-     public static void creeSchema(Connection con)
+    
+    public static void creeSchema(Connection con)
             throws SQLException {
         // je veux que le schema soit entierement créé ou pas du tout
         // je vais donc gérer explicitement une transaction
@@ -92,6 +93,7 @@ public class ProjetEncheres {
                         titre varchar(50) not null,
                         description varchar(80) not null,
                         prixInitial integer not null,
+                        prixActuel integer not null,
                         dateDebutEnchere timestamp,
                         dateFinEnchere timestamp,
                         idUtilisateur integer not null,
@@ -151,6 +153,7 @@ public class ProjetEncheres {
             con.setAutoCommit(true);
         }
     }
+     
     public static void suppSchema(Connection con) //Permet de supprimer la table utilisateur
             throws SQLException {
         try ( Statement st = con.createStatement()) {
@@ -213,12 +216,14 @@ public class ProjetEncheres {
             }
         }
     }
+    
     public static void recreerSchema(Connection con)
 //Permet de faire une méthode qui appelle la methode pour supp et ensuite recree le schéma pour éviter les erreur avec deux fois la même table lorsqu'on la modifie
             throws SQLException {
         suppSchema(con);
         creeSchema(con);
     }
+    
     public static void nouvUtilisateur(Connection con, String pseudo, String nom, String prenom, 
                                         String codePostal, String email, String pass) 
                                         throws SQLException { 
@@ -252,6 +257,7 @@ public class ProjetEncheres {
             con.setAutoCommit(true);
         }
     }
+    
     public static void nouvAnnonce(Connection con, String pseudo, String titre, String description, 
                                     Timestamp dateDebutEnchere, Timestamp dateFinEnchere, 
                                     String type, int prixInitial) throws SQLException { 
@@ -283,6 +289,8 @@ public class ProjetEncheres {
             pst.setTimestamp(5, dateFinEnchere);
             pst.setInt(6, idCategorie);
             pst.setInt(7, prixInitial);
+            int prixActuel = prixInitial;
+            pst.setInt(8, prixActuel);
             pst.executeUpdate();
         } catch(SQLException ex){
             con.rollback();
@@ -313,6 +321,7 @@ public class ProjetEncheres {
         }
     return id ;
     }
+    
     public static int identifiantCategorie(Connection con, String type)throws SQLException {
         con.setAutoCommit(false);
         int id = -1 ; //cela permet au programme de renvoyer une valeur même s'il y a une erreur avec le rollback (-1 car cette valeur est impossible dans le tableau id)
@@ -332,10 +341,11 @@ public class ProjetEncheres {
         }
     return id ;
     }
+    
     public static void nouvOffre(Connection con, Annonce annonce) throws SQLException { // Permet de demander des informations à l'utilisateur qui seront rentrées dans la table Offre
         con.setAutoCommit(false);
         try ( PreparedStatement pst = con.prepareStatement("insert into offre (dateOffre,prixActuel,idUtilisateur,idAnnonce) values (?,?,?,?)")) {
-            afficherAnnonce(con, annonce);
+            afficherAnnonce(con);
             System.out.println("id de l'Annonce sur laquelle vous voulez enchérir : ");
             int idAnnonce = Lire.i();
             Timestamp dateOffre = Timestamp.from(Instant.now());
@@ -350,7 +360,7 @@ public class ProjetEncheres {
             String nomUtilisateur = Lire.S();
             System.out.println("Mot de pass :");
             String pass = Lire.S();
-            afficherAnnonce(con, annonce);
+            afficherAnnonce(con);
             //int idUtilisateur = identifiantUtilisateur(con, nomUtilisateur,pass);
             pst.setTimestamp(1, dateOffre);
             pst.setInt(2, prixActuel);
@@ -365,6 +375,7 @@ public class ProjetEncheres {
             con.setAutoCommit(true);
         }
     }
+    
     public static int enchere(Connection con, int idAnnonce)throws SQLException {
         con.setAutoCommit(false);
         int prix = -1 ;
@@ -392,6 +403,7 @@ public class ProjetEncheres {
     System.out.println("Le montant actuel est : " + prix);    
     return prix ;
     }
+    
     public static void categorie(Connection con) throws SQLException { // Permet de demander des informations à l'utilisateur qui seront rentrées dans la table Annonce
         con.setAutoCommit(false);
         try ( PreparedStatement pst = con.prepareStatement("insert into categorie (type) values ('vetements')")) {
@@ -434,6 +446,7 @@ public class ProjetEncheres {
             con.setAutoCommit(true);
         }
     }
+    
     public static void afficherCategorie(Connection con) //Permet d'afficher la table categorie
             throws SQLException {
         con.setAutoCommit(false);
@@ -454,7 +467,8 @@ public class ProjetEncheres {
             con.setAutoCommit(true);  
         }
     }
-    public static List<Utilisateur> afficherUtilisateur(Connection con, Utilisateur utilisateur) //Permet d'afficher la table utilisateur
+    
+    public static List<Utilisateur> afficherUtilisateur(Connection con) //Permet d'afficher la table utilisateur
             throws SQLException {
         con.setAutoCommit(false);
         try ( Statement st = con.createStatement()) {
@@ -466,6 +480,8 @@ public class ProjetEncheres {
                 while (tableUtilisateur.next()){ //tant qu'il reste des lignes le programme continue
                     System.out.println("______________________________________________");
                     
+                    Utilisateur utilisateur = new Utilisateur();
+                    
                     utilisateur.setIdUtilisateur(tableUtilisateur.getInt("id"));
                     utilisateur.setPseudo(tableUtilisateur.getString("pseudo"));
                     utilisateur.setNom(tableUtilisateur.getString("nom"));
@@ -474,14 +490,22 @@ public class ProjetEncheres {
                     utilisateur.setEmail(tableUtilisateur.getString("email"));
                     utilisateur.setPrenom(tableUtilisateur.getString("nom"));
                     
+                    System.out.println("ouioui "+utilisateur.getPseudo());
+                    
                     listeUtilisateurs.add(utilisateur);
-                    System.out.println("_______________________________________________________________________________________________________________________");
-                    String nom = tableUtilisateur.getString("pseudo");
-                    String pass = tableUtilisateur.getString("pass");
-                    int id = tableUtilisateur.getInt("id");
+                    for(int i=0;i<listeUtilisateurs.size();i++){
+                        System.out.println(listeUtilisateurs.get(i).getPseudo());
+                    } 
+//                    System.out.println("_______________________________________________________________________________________________________________________");
+//                    String nom = tableUtilisateur.getString("pseudo");
+//                    String pass = tableUtilisateur.getString("pass");
+//                    int id = tableUtilisateur.getInt("id");
                 
-                    System.out.println(id +"   |   " + nom +"   |   " + pass); //Permet d'écrire en ligne
+//                    System.out.println(id +"   |   " + nom +"   |   " + pass); //Permet d'écrire en ligne
                 }
+                for(int i=0;i<listeUtilisateurs.size();i++){
+                    System.out.println(listeUtilisateurs.get(i).getPseudo());
+                    } 
                 return listeUtilisateurs;
             }
             } catch (SQLException ex) {
@@ -492,7 +516,7 @@ public class ProjetEncheres {
         }
     }
     
-    public static void afficherAnnonce(Connection con, Annonce annonce) //Permet d'afficher la table des annonces
+    public static List<Annonce> afficherAnnonce(Connection con) //Permet d'afficher la table des annonces
             throws SQLException {
         con.setAutoCommit(false);
         try ( Statement st = con.createStatement()) {
@@ -503,8 +527,10 @@ public class ProjetEncheres {
                     
                 while (tableAnnonce.next()){ //tant qu'il reste des lignes le programme continue
                     
+                    Annonce annonce = new Annonce();
+                    
                     annonce.setNomProduit(tableAnnonce.getString("titre"));
-                    annonce.setPrixInitial(tableAnnonce.getDouble("prixInitial"));
+                    annonce.setPrixInitial(tableAnnonce.getInt("prixInitial"));
                     annonce.setDescription(tableAnnonce.getString("description"));
                     annonce.setIdAnnonce(tableAnnonce.getInt("id"));
                     annonce.setIdOwnerAnnonce(tableAnnonce.getInt("idUtilisateur"));
@@ -525,6 +551,7 @@ public class ProjetEncheres {
                     int idType = tableAnnonce.getInt("idType");
                     System.out.println(id +"   |   " + titre +"   |   " + description + "   |   " + prixInitial + "   |   " + dateDebutEnchere + "   |   " + dateFinEnchere + "   |   " + idUtilisateur + "   |   " + idType ); //Permet d'écrire en ligne
                 }
+                return listeAnnonces;
             }
             } catch (SQLException ex) {
             con.rollback();
@@ -533,6 +560,7 @@ public class ProjetEncheres {
             con.setAutoCommit(true);
         }
     }
+    
      public static void afficherOffre(Connection con) //Permet d'afficher la table des annonces
             throws SQLException {
         con.setAutoCommit(false);
@@ -583,14 +611,14 @@ public class ProjetEncheres {
                             System.out.println("Bienvenue");
                         }
                         else if (rep==3) {
-                            afficherUtilisateur(con, utilisateur);
+                            afficherUtilisateur(con);
                         }
                         else if (rep==4) {
                             //nouvAnnonce(con);
                             System.out.println("Annonce ajoutée");
                         }
                         else if (rep==5) {
-                            afficherAnnonce(con, annonce);
+                            afficherAnnonce(con);
                         }
                         else if (rep==6) {
                             categorie(con);

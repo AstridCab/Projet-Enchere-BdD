@@ -8,9 +8,14 @@ import Objets.Annonce;
 import com.vaadin.flow.component.combobox.MultiSelectComboBox;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import fr.insa.astrid.projetencheres.ProjetEncheres;
+import static fr.insa.astrid.projetencheres.ProjetEncheres.defautConnect;
+import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -22,11 +27,11 @@ import com.vaadin.flow.router.Route;
 @Route(value = "vueAnnonces", layout = MainLayout.class)
 @PageTitle("Annonces")
 
-public class VueAnnonces extends VerticalLayout{
+public class VueAnnonces extends HorizontalLayout{
     
     //menu déroulant pour trier les annonces
     MultiSelectComboBox comboBox = new MultiSelectComboBox<>("Catégories");
-    
+    AnnonceForm form = new AnnonceForm();
     Grid<Annonce> grid = new Grid<>(Annonce.class);
     
     public VueAnnonces(){
@@ -36,7 +41,10 @@ public class VueAnnonces extends VerticalLayout{
         configureComboBox();
         
         configureGrid();
-        this.add(comboBox,grid);
+        this.add(grid,form);
+        
+        afficheAnnonces();
+        closeEditor();
              
     }
 
@@ -55,6 +63,35 @@ public class VueAnnonces extends VerticalLayout{
                 "description","etatEnchere","dateDebutEnchere",
                 "dateFinEnchere");
         grid.setAllRowsVisible(true);
+        
+        grid.asSingleSelect().addValueChangeListener((event) ->{
+           editAnnonce(event.getValue()); 
+        });        
     }
     
+    private void closeEditor() {
+        form.setAnnonce(null);
+        form.setVisible(false);      
+    }
+    
+    private void afficheAnnonces() {
+                    
+        List<Annonce> listeAnnonces = new ArrayList<Annonce>();
+        
+        try (Connection con = defautConnect()) {
+            listeAnnonces = ProjetEncheres.afficherAnnonce(con);       
+        } catch (Exception ex) {
+            throw new Error(ex);
+        }       
+        grid.setItems(listeAnnonces);
+    }
+    
+    private void editAnnonce(Annonce annonce) {
+        if (annonce == null){
+            closeEditor();
+        }else{
+            form.setAnnonce(annonce);
+            form.setVisible(true);
+        }
+    }
 }

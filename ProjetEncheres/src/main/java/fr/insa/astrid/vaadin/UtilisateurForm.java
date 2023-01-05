@@ -5,6 +5,7 @@
 package fr.insa.astrid.vaadin;
 
 import Objets.Utilisateur;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -28,14 +29,12 @@ public class UtilisateurForm extends FormLayout{
     Button save = new Button("Save");
     Button delete = new Button("Delete");
     Button close = new Button("Close");
-    
+    Utilisateur utilisateur = new Utilisateur();
     HorizontalLayout hLayout = new HorizontalLayout();   
     Binder<Utilisateur> binder = new BeanValidationBinder <>(Utilisateur.class);
     
     
     public UtilisateurForm(){
-        
-        Utilisateur utilisateur = new Utilisateur();
         
         binder.bindInstanceFields(this);
         setUtilisateur(utilisateur);
@@ -45,18 +44,10 @@ public class UtilisateurForm extends FormLayout{
     
     
     public void setUtilisateur(Utilisateur utilisateur){
-        binder.setBean(utilisateur);
-       
+        binder.setBean(utilisateur);      
     }
 
     private void afficheComposants() {
-        nom.setWidth("20");
-        prenom.setWidth("20");
-        email.setWidth("20");
-        
-        save.setWidth("20");
-        delete.setWidth("200");
-        close.setWidth("200");
         
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
@@ -67,7 +58,7 @@ public class UtilisateurForm extends FormLayout{
         
         hLayout.add(save,delete,close);
         
-        this.add(nom, prenom,email,hLayout);
+        add(nom, prenom,email,hLayout);
     }
     
 }

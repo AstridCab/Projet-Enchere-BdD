@@ -11,6 +11,7 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
@@ -22,24 +23,21 @@ import com.vaadin.flow.data.binder.Binder;
 public class AnnonceForm extends FormLayout{
     
     TextField nomProduit = new TextField("Nom du produit");
-    TextField prixActuel = new TextField("Votre enchère");
+    TextField prixInitial = new TextField("Prix actuel");
+    NumberField prixEnchere_tf = new NumberField("Votre enchère");
     //NumberField prixEnchere_tf = new NumberField("Prix de votre enchere");
-    
-    Label labelText = new Label("Pour que vous puissiez enchérir, il nous faut :");
-    
-    Double prixEnchere;
-    
+    Label labelText = new Label("Pour que vous puissiez enchérir, il nous faut :");   
+    Double prixEnchere;   
     public Button boutonEncherir = new Button("Enchérir");
-    
     HorizontalLayout hLayout = new HorizontalLayout();
-    
     Binder<Annonce> binder = new BeanValidationBinder <>(Annonce.class);
+    Annonce annonce = new Annonce();
     
     
     public AnnonceForm(){
         
         binder.bindInstanceFields(this);
-        
+        setAnnonce(annonce);
         afficheComposants();
         
         encherir();
@@ -53,16 +51,12 @@ public class AnnonceForm extends FormLayout{
     }
 
     private void afficheComposants() {
-        nomProduit.setWidth("20");
-        prixActuel.setWidth("20");
         
         boutonEncherir.setWidth("20");    
         boutonEncherir.addThemeVariants(ButtonVariant.LUMO_PRIMARY);        
         boutonEncherir.addClickShortcut(Key.ENTER);
-
-        hLayout.add(boutonEncherir);
         
-        this.add(nomProduit, prixActuel,hLayout);
+        this.add(nomProduit, prixInitial,prixEnchere_tf,boutonEncherir);
     }
 
     

@@ -13,8 +13,7 @@ public class Annonce {
     private String nomProduit = "";
     
     @NotNull
-    @NotEmpty
-    private Double prixInitial;
+    private int prixInitial;
     
     @NotEmpty
     private String description = "";    
@@ -104,11 +103,11 @@ public class Annonce {
         this.description = description;
     }
     
-    public Double getPrixInitial() {
+    public int getPrixInitial() {
         return prixInitial;
     }
 
-    public void setPrixInitial(Double prixInitial) {
+    public void setPrixInitial(int prixInitial) {
         this.prixInitial = prixInitial;
     }
 
