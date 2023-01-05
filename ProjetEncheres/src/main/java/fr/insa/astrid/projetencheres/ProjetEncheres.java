@@ -367,16 +367,18 @@ public class ProjetEncheres {
             System.out.println("Nom d'Utilisateur :");
             String nomUtilisateur = Lire.S();
             
-            System.out.println("Mot de pass :");
-            String pass = Lire.S();
+            //System.out.println("Mot de pass :");
+            //String pass = Lire.S();
             
             afficherAnnonce(con);
-            //int idUtilisateur = identifiantUtilisateur(con, nomUtilisateur,pass);
+            int idUtilisateur = identifiantUtilisateur(con, nomUtilisateur);
+            
             pst.setTimestamp(1, dateOffre);
             pst.setInt(2, prixActuel);
-            //pst.setInt(3, idUtilisateur);
+            pst.setInt(3, idUtilisateur);
             pst.setInt(4, idAnnonce);
             pst.executeUpdate();
+            
         } catch(SQLException ex){
             con.rollback();
             throw ex;
@@ -390,8 +392,10 @@ public class ProjetEncheres {
         con.setAutoCommit(false);
         int prix = -1 ;
         
-        try ( PreparedStatement pst = con.prepareStatement("select idAnnonce,prixActuel from offre as e1 where dateOffre =(select max(dateOffre) from offre as e2  where e1.idAnnonce = e2.idAnnonce) and idAnnonce = ? ")) {
+        try ( PreparedStatement pst = con.prepareStatement(
+                "select idAnnonce, prixActuel from offre as e1 where dateOffre = (select max(dateOffre) from offre as e2  where e1.idAnnonce = e2.idAnnonce) and idAnnonce = ? ")) {
             pst.setInt(1, idAnnonce);
+            
             try (ResultSet tableOffre= pst.executeQuery()){ //on écrit rien dans les parenthèses car le programme sait deja ce qu'il doit envoyer                
                 while (tableOffre.next()){ //tant qu'il reste des lignes le programme continue
                     prix = tableOffre.getInt("prixActuel");
@@ -402,16 +406,18 @@ public class ProjetEncheres {
         if (prix == -1) {
             try ( PreparedStatement pst = con.prepareStatement("select prixInitial from Annonce where (id)=(?)")) {
                 pst.setInt(1, idAnnonce);
+                
                 try (ResultSet tableAnnonce= pst.executeQuery()){ //on écrit rien dans les parenthèses car le programme sait deja ce qu'il doit envoyer                
-                            while (tableAnnonce.next()){ //tant qu'il reste des lignes le programme continue
+                            
+                    while (tableAnnonce.next()){ //tant qu'il reste des lignes le programme continue
                                 prix = tableAnnonce.getInt("prixInitial");
                             }
                 }
             }
        }
         
-    System.out.println("Le montant actuel est : " + prix);    
-    return prix ;
+        System.out.println("Le montant actuel est : " + prix);    
+        return prix ;
     }
     
     public static void categorie(Connection con) throws SQLException { // Permet de demander des informations à l'utilisateur qui seront rentrées dans la table Annonce

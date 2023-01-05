@@ -11,6 +11,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
@@ -62,6 +63,7 @@ public class AnnonceForm extends FormLayout{
         
         boutonEncherir.addClickListener((click) ->{
            if (binder.isValid()){
+               Notification.show("Enchère postée !");
                Annonce annonce = binder.getBean();
                int idAnnonce = annonce.getIdAnnonce();
                int idUtilisateur = idUtilisateur_tf.getValue().intValue();
