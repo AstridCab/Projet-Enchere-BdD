@@ -30,13 +30,11 @@ public class AnnonceForm extends FormLayout{
     
     TextField nomProduit = new TextField("Nom du produit");
     TextField prixInitial = new TextField("Prix actuel");
-    NumberField idUtilisateur_tf = new NumberField("Votre nom d'utilisateur");
-    NumberField prixEnchere_tf = new NumberField("Votre enchère");
+    TextField nomUtilisateur_tf = new TextField("Votre nom d'utilisateur");
+    NumberField prixEnchere_tf = new NumberField("Votre enchère (en euros)");
     //NumberField prixEnchere_tf = new NumberField("Prix de votre enchere");
-    Label labelText = new Label("Pour que vous puissiez enchérir, il nous faut :");   
-    Double prixEnchere;   
+    Label labelText = new Label("Pour que vous puissiez enchérir, il nous faut :");     
     public Button boutonEncherir = new Button("Enchérir");
-    HorizontalLayout hLayout = new HorizontalLayout();
     Binder<Annonce> binder = new BeanValidationBinder <>(Annonce.class);
     Annonce annonce = new Annonce();
     
@@ -46,6 +44,7 @@ public class AnnonceForm extends FormLayout{
         binder.bindInstanceFields(this);
         setAnnonce(annonce);
         afficheComposants();
+        encherir();
         
     }
     
@@ -57,35 +56,50 @@ public class AnnonceForm extends FormLayout{
 
     private void afficheComposants() {
         
-        boutonEncherir.setWidth("20");    
         boutonEncherir.addThemeVariants(ButtonVariant.LUMO_PRIMARY);        
         boutonEncherir.addClickShortcut(Key.ENTER);
         
-        boutonEncherir.addClickListener((click) ->{
-           if (binder.isValid()){
-               Notification.show("Enchère postée !");
-               Annonce annonce = binder.getBean();
-               int idAnnonce = annonce.getIdAnnonce();
-               int idUtilisateur = idUtilisateur_tf.getValue().intValue();
-               int prixEnchere = prixEnchere_tf.getValue().intValue();
-               Timestamp dateEnchere = new Timestamp(System.currentTimeMillis());
-               
-               Enchere enchere = new Enchere();
-               
-               enchere.setDateOffre(dateEnchere);
-               enchere.setIdAnnonce(idAnnonce);
-               enchere.setIdUtilisateur(idUtilisateur);
-               enchere.setPrixEnchere(prixEnchere);
-               
-               try (Connection con = defautConnect()) {
-                    ProjetEncheres.nouvOffre(con, annonce, enchere);
-               } catch (Exception ex) {
-            throw new Error(ex);
-        }
-           }
-        });
         
-        this.add(nomProduit, prixInitial,prixEnchere_tf,boutonEncherir);
+        this.add(nomProduit, prixInitial,labelText,
+                nomUtilisateur_tf,prixEnchere_tf,
+                boutonEncherir);
     }
+
+    private void encherir() {
+        
+        boutonEncherir.addClickListener((click) ->{
+            
+            if (binder.isValid()){
+                Notification.show("ouioui");
+               try (Connection con = defautConnect()) {
+              
+                    Annonce annonce = binder.getBean();
+                    int idAnnonce = annonce.getIdAnnonce();
+               
+                    String nomUtilisateur = nomUtilisateur_tf.getValue();
+                    
+                    int idUtilisateur = ProjetEncheres.identifiantUtilisateur(con, nomUtilisateur);
+                    
+                    if (idUtilisateur == -1) {
+                        Notification.show("Utilisateur non-inscrit...");
+                    }else{
+                        
+                        int prixEnchere = prixEnchere_tf.getValue().intValue();                       
+                        Timestamp dateEnchere = new Timestamp(System.currentTimeMillis());               
+                        Enchere enchere = new Enchere();
+               
+                        enchere.setDateOffre(dateEnchere);
+                        enchere.setIdAnnonce(idAnnonce);
+                        enchere.setIdUtilisateur(idUtilisateur);
+                        enchere.setPrixEnchere(prixEnchere);
+                        Notification.show("zizi");
+                        ProjetEncheres.nouvOffre(con, annonce, enchere);
+                    }
+                } catch (Exception ex) {
+            throw new Error(ex);
+                  }
+          }
+        });
+            }
     
 }

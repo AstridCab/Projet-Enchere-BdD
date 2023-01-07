@@ -15,6 +15,9 @@ public class Annonce {
     @NotNull
     private int prixInitial;
     
+    @NotNull
+    private int prixActuel;
+    
     @NotEmpty
     private String description = "";    
 
@@ -122,6 +125,14 @@ public class Annonce {
 
     public void setNomProduit(String nomProduit) {
         this.nomProduit = nomProduit;
+    }
+    
+    public int getPrixActuel() {
+        return prixActuel;
+    }
+
+    public void setPrixActuel(int prixActuel) {
+        this.prixActuel = prixActuel;
     }
 
 }

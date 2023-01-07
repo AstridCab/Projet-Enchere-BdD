@@ -267,23 +267,27 @@ public class ProjetEncheres {
                                     String type, int prixInitial) throws SQLException { 
         // Permet de demander des informations à l'utilisateur qui seront rentrées dans la table Annonce
         con.setAutoCommit(false);
-        try ( PreparedStatement pst = con.prepareStatement("insert into annonce (idUtilisateur,titre,description,dateDebutEnchere,dateFinEnchere,idType,prixInitial) values (?,?,?,?,?,?,?)")) {
-            System.out.println("Pseudo d'Utilisateur :");
-            //String pseudo = Lire.S();
-            System.out.println("Nom de l'objet :");
-            //String titre = Lire.S();
-            System.out.println("Description de l'objet :");
-            //String description = Lire.S();
-            System.out.println("Date de mise en vente (sous la forme AAAA-MM-JJ hh:mm:ss) ");
-            //String dateDebutEnchere = Lire.S();
-            //Timestamp dateDebut = Timestamp.valueOf(dateDebutEnchere); // permet de convertir le string en timestamp
-            System.out.println("Date de fin de mise en vente (sous la forme AAAA-MM-JJ hh:mm:ss) ");
-            //String dateFinEnchere = Lire.S();
-            //Timestamp dateFin = Timestamp.valueOf(dateFinEnchere);
-            System.out.println("Catégorie de votre objet entre vetements, meuble, bijoux, art :");
-            //String type = Lire.S();
-            System.out.println("Prix de mise en vente");
-            //int prixInitial = Lire.i();
+        try ( PreparedStatement pst = con.prepareStatement(
+                "insert into annonce (idUtilisateur, titre, description, "
+                        + "dateDebutEnchere, dateFinEnchere, idType, "
+                        + "prixInitial, prixActuel) "
+                        + "values (?,?,?,?,?,?,?)")) {
+//            System.out.println("Pseudo d'Utilisateur :");
+//            //String pseudo = Lire.S();
+//            System.out.println("Nom de l'objet :");
+//            //String titre = Lire.S();
+//            System.out.println("Description de l'objet :");
+//            //String description = Lire.S();
+//            System.out.println("Date de mise en vente (sous la forme AAAA-MM-JJ hh:mm:ss) ");
+//            //String dateDebutEnchere = Lire.S();
+//            //Timestamp dateDebut = Timestamp.valueOf(dateDebutEnchere); // permet de convertir le string en timestamp
+//            System.out.println("Date de fin de mise en vente (sous la forme AAAA-MM-JJ hh:mm:ss) ");
+//            //String dateFinEnchere = Lire.S();
+//            //Timestamp dateFin = Timestamp.valueOf(dateFinEnchere);
+//            System.out.println("Catégorie de votre objet entre vetements, meuble, bijoux, art :");
+//            //String type = Lire.S();
+//            System.out.println("Prix de mise en vente");
+//            //int prixInitial = Lire.i();
             int idUtilisateur = identifiantUtilisateur(con,pseudo);
             int idCategorie= identifiantCategorie(con, type);
             pst.setInt(1, idUtilisateur);
@@ -351,31 +355,68 @@ public class ProjetEncheres {
         try ( PreparedStatement pst = con.prepareStatement(
                 "insert into offre (dateOffre,prixActuel,idUtilisateur,idAnnonce) values (?,?,?,?)")) 
         {
-            afficherAnnonce(con);
-            
-            System.out.println("id de l'Annonce sur laquelle vous voulez enchérir : ");
-            int idAnnonce = Lire.i();
+            //afficherAnnonce(con);
+            int idAnnonce = annonce.getIdAnnonce();
+//            System.out.println("id de l'Annonce sur laquelle vous voulez enchérir : ");
+//            int idAnnonce = Lire.i();
             Timestamp dateOffre = Timestamp.from(Instant.now());
             int ancienPrix = enchere(con, idAnnonce);
+            int prixEnchere = enchere.getPrixEnchere();
+            int idUtilisateur = enchere.getIdUtilisateur();
             
-            System.out.println("Prix de votre offre : ");
-            int prixActuel = Lire.i();
-            while (prixActuel < ancienPrix ){
+//            System.out.println("Prix de votre offre : ");
+//            int prixActuel = Lire.i();
+            
+            while (prixEnchere < ancienPrix){
                 System.out.println("Prix de votre offre : ");
-                prixActuel = Lire.i();
+                prixEnchere = Lire.i();
             }
             
-            System.out.println("Nom d'Utilisateur :");
-            String nomUtilisateur = Lire.S();
+//            System.out.println("Nom d'Utilisateur :");
+//            String nomUtilisateur = Lire.S();
             
             //System.out.println("Mot de pass :");
             //String pass = Lire.S();
             
-            afficherAnnonce(con);
-            int idUtilisateur = identifiantUtilisateur(con, nomUtilisateur);
-            
+            //afficherAnnonce(con);
+      
             pst.setTimestamp(1, dateOffre);
-            pst.setInt(2, prixActuel);
+            pst.setInt(2, prixEnchere);
+            pst.setInt(3, idUtilisateur);
+            pst.setInt(4, idAnnonce);
+            pst.executeUpdate();
+            
+            
+            
+        } catch(SQLException ex){
+            con.rollback();
+            throw ex;
+        }
+        finally {
+            con.setAutoCommit(true);
+        }
+    }
+    
+    public static void actualiseAnnonce(Connection con, Annonce annonce, Enchere enchere) throws SQLException { // Permet de demander des informations à l'utilisateur qui seront rentrées dans la table Offre
+        con.setAutoCommit(false);
+        try ( PreparedStatement pst = con.prepareStatement(
+                "insert into offre (dateOffre,prixActuel,idUtilisateur,idAnnonce) values (?,?,?,?)")) 
+        {
+            //afficherAnnonce(con);
+            int idAnnonce = annonce.getIdAnnonce();
+
+            Timestamp dateOffre = Timestamp.from(Instant.now());
+            int ancienPrix = enchere(con, idAnnonce);
+            int prixEnchere = enchere.getPrixEnchere();
+            int idUtilisateur = enchere.getIdUtilisateur();
+            
+            while (prixEnchere < ancienPrix){
+                System.out.println("Prix de votre offre : ");
+                prixEnchere = Lire.i();
+            }
+      
+            pst.setTimestamp(1, dateOffre);
+            pst.setInt(2, prixEnchere);
             pst.setInt(3, idUtilisateur);
             pst.setInt(4, idAnnonce);
             pst.executeUpdate();
@@ -394,7 +435,10 @@ public class ProjetEncheres {
         int prix = -1 ;
         
         try ( PreparedStatement pst = con.prepareStatement(
-                "select idAnnonce, prixActuel from offre as e1 where dateOffre = (select max(dateOffre) from offre as e2  where e1.idAnnonce = e2.idAnnonce) and idAnnonce = ? ")) {
+                "select idAnnonce, prixActuel"
+                + " from offre as e1 where dateOffre = "
+                + " (select max(dateOffre) "
+                + " from offre as e2 where e1.idAnnonce = e2.idAnnonce) and idAnnonce = ? ")) {
             pst.setInt(1, idAnnonce);
             
             try (ResultSet tableOffre= pst.executeQuery()){ //on écrit rien dans les parenthèses car le programme sait deja ce qu'il doit envoyer                
@@ -415,7 +459,7 @@ public class ProjetEncheres {
                             }
                 }
             }
-       }
+        }
         
         System.out.println("Le montant actuel est : " + prix);    
         return prix ;

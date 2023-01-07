@@ -40,17 +40,15 @@ public class VueDeposerAnnonce extends VerticalLayout{
     TextArea nomProduit_tf = new TextArea("Un titre pour votre annonce");
     TextArea description_tf = new TextArea("Une description de votre produit");
     MultiSelectComboBox categorie_CB = new MultiSelectComboBox<>("Une catégorie");
-    NumberField prixInitial_tf = new NumberField ("Un prix de départ");
+    NumberField prixInitial_tf = new NumberField ("Un prix de départ (en euros)");
     DateTimePicker dateDebutEnchere_dtp = new DateTimePicker("Une date de debut d'enchère");
     DateTimePicker dateFinEnchere_dtp = new DateTimePicker("Une date de fin d'enchère");
     Button boutonValider = new Button("Valider");
     
-    private Menu main;
-    
+    SessionInfo sessionInfo = new SessionInfo();
 
-    public VueDeposerAnnonce(Menu main){
+    public VueDeposerAnnonce(){
         
-        this.main = main;
         creerAnnonce();
         deposerAnnonce();
         
@@ -90,10 +88,9 @@ public class VueDeposerAnnonce extends VerticalLayout{
         boutonValider.setSizeFull();
         boutonValider.addClickListener((t)-> {
            Notification.show("bouton valider clické");
-           //nomUtilisateur = nomUtilisateur_tf.
         });
           
-        this.add(titre,nomUtilisateur_tf,nomProduit_tf,
+        this.add(titre,nomProduit_tf,
                 description_tf,dateDebutEnchere_dtp,dateFinEnchere_dtp,
                 categorie_CB,prixInitial_tf, boutonValider);
         
@@ -106,10 +103,9 @@ public class VueDeposerAnnonce extends VerticalLayout{
                
         boutonValider.addClickListener((event) -> {
             try (Connection con = defautConnect()) {
-                System.out.println("Vous êtes connecté !");
 
-                Optional<Utilisateur> optionalUtilisateur = this.main.getSessionInfo().getCurUser();
-                String nomUtilisateur = optionalUtilisateur.get().getPseudo();
+                String nomUtilisateur = nomProduit_tf.getValue();
+                Notification.show("connecté !");
                 String nomProduit = nomProduit_tf.getValue();
                 String description = description_tf.getValue();
                 LocalDateTime dateDebutEnchere_ldt = dateDebutEnchere_dtp.getValue();
