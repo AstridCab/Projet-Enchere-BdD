@@ -687,7 +687,7 @@ public class ProjetEncheres {
                     rep= Lire.i();
                     try {
                         if (rep==1) {
-                            recreerSchema(con);
+                            creeSchema(con);
                             System.out.println("La Base de Donnee a été mise a jour");
                         }
                         else if (rep==2) {

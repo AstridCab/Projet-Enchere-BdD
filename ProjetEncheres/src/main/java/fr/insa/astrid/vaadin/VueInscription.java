@@ -26,8 +26,8 @@ import java.sql.Connection;
 
 // VUE POUR SE CONNECTER OU S'INSCRIRE
 
-@Route(value = "connection", layout = MainLayout.class)
-@PageTitle("Connection | Inscription")
+@Route(value = "Inscription", layout = MainLayout.class)
+@PageTitle("Inscription")
 
 public class VueInscription extends VerticalLayout {
     

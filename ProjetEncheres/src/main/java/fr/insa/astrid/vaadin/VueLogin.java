@@ -2,7 +2,10 @@ package fr.insa.astrid.vaadin;
 
 import Objets.Utilisateur;
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.login.LoginForm;
+import com.vaadin.flow.component.login.LoginI18n;
 import com.vaadin.flow.component.login.LoginOverlay;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
@@ -26,6 +29,10 @@ public class VueLogin extends VerticalLayout {
     private final LoginForm connection = new LoginForm();
     LoginOverlay loginOverlay = new LoginOverlay();
     SessionInfo sessionInfo = new SessionInfo();
+    Label inscription_lb = new Label("Pas encore inscrit ? Cliquez sur sur le bouton :");
+    Button inscription_bt = new Button("Inscription");
+    LoginI18n i18n = LoginI18n.createDefault();
+    LoginI18n.Form i18nForm = i18n.getForm();
     
     public VueLogin(){
                 
@@ -38,9 +45,10 @@ public class VueLogin extends VerticalLayout {
         loginOverlay.setDescription("Notre site de vente aux enchères");
         loginOverlay.setOpened(true);
         
-        add(connection,loginOverlay);
+        add(loginOverlay);
         
         testConnection();
+        inscription();
         
 	}
 
@@ -50,13 +58,9 @@ public class VueLogin extends VerticalLayout {
             try (Connection con = defautConnect()) { 
                 String nom = event.getUsername();
                 String pass = event.getPassword();
-           
-//                String username_BDD = "user";
-//                String password_BDD = "pass";
                 
                 Optional<Utilisateur> user = ProjetEncheres.login(con, nom, pass); 
            
-//                if ((password.equals(password_BDD)) & (username.equals(username_BDD))) {   
                 if (user.isEmpty()) {          
                     Notification.show("Mot de passe ou identifiant incorrect");
                     loginOverlay.setError(true); 
@@ -79,20 +83,17 @@ public class VueLogin extends VerticalLayout {
     public void setSessionInfo(SessionInfo sessionInfo) {
         this.sessionInfo = sessionInfo;
     }
+
+    private void inscription() {
         
-//    public void doLogin() {
-//        try (Connection con = defautConnect()) {
-//  
-//            Optional<Utilisateur> user = ProjetEncheres.login(con, nom, pass);
-//            
-//            if(user.isEmpty()) {
-//                Notification.show("Utilisateur ou pass invalide");
-//            } else {
-//                this.main.getSessionInfo().setCurUser(user);
-//            }
-//            } catch (Exception ex) {
-//            throw new Error(ex);
-//        }     
-//    }
+        loginOverlay.setI18n(i18n);
+        i18nForm.setForgotPassword("Inscription");
+        
+        loginOverlay.addForgotPasswordListener(click -> {       
+            UI.getCurrent().close();
+            UI.getCurrent().navigate("Inscription"); 
+        });
+        
+    }
 
 }
