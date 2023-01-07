@@ -23,6 +23,7 @@ import com.vaadin.flow.router.Route;
 public class Menu extends VerticalLayout{
     
     Label titreMenu = new Label();
+    SessionInfo sessionInfo = new SessionInfo();
     
     public Menu(){
         
@@ -32,6 +33,13 @@ public class Menu extends VerticalLayout{
 	setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);        
         this.add(titreMenu);
                 
+    }
+    
+    /**
+     * @return the sessionInfo
+     */
+    public SessionInfo getSessionInfo() {
+        return sessionInfo;
     }
     
 }

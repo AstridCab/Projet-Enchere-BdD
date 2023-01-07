@@ -19,6 +19,7 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 //bonjour
@@ -467,7 +468,7 @@ public class ProjetEncheres {
             throws SQLException {
         con.setAutoCommit(false);
         try ( Statement st = con.createStatement()) {
-            try (ResultSet tableCategorie=st.executeQuery("select * from categorie")){                
+            try (ResultSet tableCategorie = st.executeQuery("select * from categorie")){                
                     System.out.println("Table Categorie");
                 while (tableCategorie.next()){ //tant qu'il reste des lignes le programme continue
                     System.out.println("_________________________");
@@ -580,8 +581,8 @@ public class ProjetEncheres {
      public static void afficherOffre(Connection con) //Permet d'afficher la table des annonces
             throws SQLException {
         con.setAutoCommit(false);
-        try ( Statement st = con.createStatement()) {
-            try (ResultSet tableOffre=st.executeQuery("select * from Offre")){                
+        try (Statement st = con.createStatement()) {
+            try (ResultSet tableOffre = st.executeQuery("select * from Offre")){                
                     System.out.println("Table Offre");
                 while (tableOffre.next()){ //tant qu'il reste des lignes le programme continue
                     System.out.println("______________________________________________________");
@@ -597,6 +598,29 @@ public class ProjetEncheres {
             throw ex;
         } finally {
             con.setAutoCommit(true);
+        }
+    }
+     
+    public static Optional<Utilisateur> login(Connection con, String pseudo, String pass) throws SQLException {
+        
+        Utilisateur utilisateur = new Utilisateur();
+        
+        try (PreparedStatement pst = con.prepareStatement(
+                " select pseudo, pass "
+                + " from utilisateur "
+                + " where utilisateur.pseudo = ? and pass = ?")) {
+
+            pst.setString(1, pseudo);
+            pst.setString(2, pass);
+            ResultSet res = pst.executeQuery();
+            
+            if (res.next()) {               
+                utilisateur.setPseudo(pseudo);
+                utilisateur.setPassword(pass);
+                return Optional.of(utilisateur);
+            } else {
+                return Optional.empty();
+            }
         }
     }
      

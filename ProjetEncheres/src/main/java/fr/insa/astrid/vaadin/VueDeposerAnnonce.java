@@ -4,6 +4,7 @@
  */
 package fr.insa.astrid.vaadin;
 
+import Objets.Utilisateur;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.MultiSelectComboBox;
 import com.vaadin.flow.component.datetimepicker.DateTimePicker;
@@ -21,6 +22,7 @@ import static fr.insa.astrid.projetencheres.ProjetEncheres.defautConnect;
 import java.sql.Connection;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 /**
  *
@@ -32,7 +34,7 @@ import java.time.LocalDateTime;
 @Route(value = "pageDeposerAnnonce", layout = MainLayout.class)
 @PageTitle("Annonce")
 
-public class PageDeposerAnnonce extends VerticalLayout{
+public class VueDeposerAnnonce extends VerticalLayout{
     
     TextField nomUtilisateur_tf = new TextField("Votre nom d'utilisateur");
     TextArea nomProduit_tf = new TextArea("Un titre pour votre annonce");
@@ -43,9 +45,12 @@ public class PageDeposerAnnonce extends VerticalLayout{
     DateTimePicker dateFinEnchere_dtp = new DateTimePicker("Une date de fin d'enchère");
     Button boutonValider = new Button("Valider");
     
+    private Menu main;
+    
 
-    public PageDeposerAnnonce(){
+    public VueDeposerAnnonce(Menu main){
         
+        this.main = main;
         creerAnnonce();
         deposerAnnonce();
         
@@ -103,7 +108,8 @@ public class PageDeposerAnnonce extends VerticalLayout{
             try (Connection con = defautConnect()) {
                 System.out.println("Vous êtes connecté !");
 
-                String nomUtilisateur = nomUtilisateur_tf.getValue();
+                Optional<Utilisateur> optionalUtilisateur = this.main.getSessionInfo().getCurUser();
+                String nomUtilisateur = optionalUtilisateur.get().getPseudo();
                 String nomProduit = nomProduit_tf.getValue();
                 String description = description_tf.getValue();
                 LocalDateTime dateDebutEnchere_ldt = dateDebutEnchere_dtp.getValue();

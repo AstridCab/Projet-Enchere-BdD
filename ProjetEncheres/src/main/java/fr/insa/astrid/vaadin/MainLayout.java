@@ -40,7 +40,7 @@ public class MainLayout extends AppLayout{
         RouterLink vueInscription = new RouterLink("Inscription", VueInscription.class);
         RouterLink vueAnnonces = new RouterLink("Annonces", VueAnnonces.class);
         RouterLink vueMenu = new RouterLink("Menu", Menu.class);
-        RouterLink pageDeposerAnnonce = new RouterLink("Déposer une annonce", PageDeposerAnnonce.class);
+        RouterLink pageDeposerAnnonce = new RouterLink("Déposer une annonce", VueDeposerAnnonce.class);
         RouterLink vueLogin = new RouterLink("Login", VueLogin.class);
         RouterLink vueUtilisateurs = new RouterLink("Utilisateurs", VueUtilisateurs.class);
         
