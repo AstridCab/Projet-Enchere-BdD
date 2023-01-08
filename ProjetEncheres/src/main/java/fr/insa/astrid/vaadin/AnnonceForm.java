@@ -10,9 +10,9 @@ import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
@@ -29,15 +29,13 @@ import java.sql.Timestamp;
 public class AnnonceForm extends FormLayout{
     
     TextField nomProduit = new TextField("Nom du produit");
-    TextField prixInitial = new TextField("Prix actuel");
+    TextField prixActuel = new TextField("Prix actuel");
     TextField nomUtilisateur_tf = new TextField("Votre nom d'utilisateur");
     NumberField prixEnchere_tf = new NumberField("Votre enchère (en euros)");
-    //NumberField prixEnchere_tf = new NumberField("Prix de votre enchere");
     Label labelText = new Label("Pour que vous puissiez enchérir, il nous faut :");     
     public Button boutonEncherir = new Button("Enchérir");
     Binder<Annonce> binder = new BeanValidationBinder <>(Annonce.class);
-    Annonce annonce = new Annonce();
-    
+    Annonce annonce = new Annonce();    
     
     public AnnonceForm(){
         
@@ -59,8 +57,13 @@ public class AnnonceForm extends FormLayout{
         boutonEncherir.addThemeVariants(ButtonVariant.LUMO_PRIMARY);        
         boutonEncherir.addClickShortcut(Key.ENTER);
         
+        Div euroSuffix = new Div();
+        euroSuffix.setText("€");
+        prixEnchere_tf.setSuffixComponent(euroSuffix);
+        prixActuel.setSuffixComponent(euroSuffix);
         
-        this.add(nomProduit, prixInitial,labelText,
+        
+        this.add(nomProduit, prixActuel,labelText,
                 nomUtilisateur_tf,prixEnchere_tf,
                 boutonEncherir);
     }

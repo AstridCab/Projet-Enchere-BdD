@@ -86,9 +86,6 @@ public class VueLogin extends VerticalLayout {
 
     private void inscription() {
         
-        loginOverlay.setI18n(i18n);
-        i18nForm.setForgotPassword("Inscription");
-        
         loginOverlay.addForgotPasswordListener(click -> {       
             UI.getCurrent().close();
             UI.getCurrent().navigate("Inscription"); 

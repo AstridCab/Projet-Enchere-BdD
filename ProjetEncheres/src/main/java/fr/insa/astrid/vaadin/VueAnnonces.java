@@ -9,6 +9,9 @@ import com.vaadin.flow.component.combobox.MultiSelectComboBox;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import fr.insa.astrid.projetencheres.ProjetEncheres;
@@ -30,27 +33,41 @@ import java.util.List;
 public class VueAnnonces extends HorizontalLayout{
     
     //menu déroulant pour trier les annonces
-    MultiSelectComboBox comboBox = new MultiSelectComboBox<>("Catégories");
+    MultiSelectComboBox comboBox = new MultiSelectComboBox<>();
     AnnonceForm form = new AnnonceForm();
     Grid<Annonce> grid = new Grid<>(Annonce.class);
+    HorizontalLayout hLayout = new HorizontalLayout();
+    VerticalLayout vLayout = new VerticalLayout();
+    TextField filterText = new TextField();
     
     public VueAnnonces(){
         
         setSizeFull();
         
         configureComboBox();
-        
+        configureFilterText();
         configureGrid();
-        this.add(grid,form);
+        
+        hLayout.add(comboBox, filterText);
+        vLayout.add(hLayout,grid);
+        this.add(vLayout, form);
         
         afficheAnnonces();
         closeEditor();
              
     }
 
+    private void configureFilterText(){
+        filterText.setTitle("Filtre");
+        filterText.setValueChangeMode(ValueChangeMode.LAZY);
+        filterText.setPlaceholder("Filtrez par nom...");
+        filterText.setClearButtonVisible(true);
+    }
+    
     private void configureComboBox() {
                 
         // petit truc déroulant en haut pour trier
+        comboBox.setPlaceholder("Catégories");
         comboBox.setItems("Tout", "Meubles","Vêtements","Bijoux", "Autres");
         comboBox.addValueChangeListener(t -> Notification.show(comboBox.getValue().toString()));
         
@@ -59,8 +76,8 @@ public class VueAnnonces extends HorizontalLayout{
     private void configureGrid() {
         
         // grille avec toutes les annonces
-        grid.setColumns("idAnnonce","nomProduit", "prixInitial",
-                "description","etatEnchere","dateDebutEnchere",
+        grid.setColumns("idAnnonce","nomProduit", "prixActuel",
+                "description","dateDebutEnchere",
                 "dateFinEnchere");
         grid.setAllRowsVisible(true);
         

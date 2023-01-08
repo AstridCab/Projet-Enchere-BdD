@@ -592,6 +592,7 @@ public class ProjetEncheres {
                     
                     annonce.setNomProduit(tableAnnonce.getString("titre"));
                     annonce.setPrixInitial(tableAnnonce.getInt("prixInitial"));
+                    annonce.setPrixActuel(tableAnnonce.getInt("prixActuel"));                    
                     annonce.setDescription(tableAnnonce.getString("description"));
                     annonce.setIdAnnonce(tableAnnonce.getInt("id"));
                     annonce.setIdOwnerAnnonce(tableAnnonce.getInt("idUtilisateur"));
